@@ -2,7 +2,7 @@ function handleOnLoad(){
     const page = document.getElementById('indexPage')
     let html = `<nav class="navbar navbar-expand navbar-dark bg-dark">
     <div class="container-fluid">
-      <img src="./assets/img/oopsies.png" class="navbar-logo" />
+      <img src="../assets/img/oopsies.png" class="navbar-logo" />
       <a class="navbar-brand" href="Analytics.html">Shop By Recipe</a>
       <div class="d-flex justify-content-center flex-grow-1">
         <a class="navbar-brand" href="./recipes.html">Recipes</a>
@@ -48,7 +48,7 @@ function handleOnLoad(){
       
       <video autoplay muted loop id="bgVideo">
         <source
-          src="./assets/Videos/HomePageBackroundVideo.mp4"
+          src="../assets/Videos/HomePageBackroundVideo.mp4"
           type="video/mp4"
         />
         Your browser does not support HTML5 video.
@@ -110,7 +110,7 @@ function handleOnLoad(){
           <div class="card bg-light" style="height: 100%">
             <div class="card-body">
               <img
-                src="./assets/img/Recipe.jpeg"
+                src="../assets/img/Recipe.jpeg"
                 class="rounded-circle mb-3"
                 alt=""
                 style="width: 200px; height: 200px"
@@ -123,7 +123,7 @@ function handleOnLoad(){
           <div class="card bg-light" style="height: 100%">
             <div class="card-body">
               <img
-                src="./assets/img/publix.png"
+                src="../assets/img/publix.png"
                 class="rounded-circle mb-3"
                 alt=""
                 style="width: 200px; height: 200px"
@@ -136,7 +136,7 @@ function handleOnLoad(){
           <div class="card bg-light" style="height: 100%">
             <div class="card-body">
               <img
-                src="./assets/img/family.jpg"
+                src="../assets/img/family.jpg"
                 class="rounded-circle mb-3"
                 alt=""
                 style="width: 200px; height: 200px"

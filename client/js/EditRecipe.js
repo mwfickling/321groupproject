@@ -197,54 +197,7 @@ function handleOnLoad(){
     ingredients = []; 
     populateIngredientsTable();
 }
-// function handleAddIngredient() {
-//     const ingredientName = document.getElementById('totalIngredientName').value;
-//     const ingredientAmount = document.getElementById('totalIngredientAmount').value;
-//     const ingredientUnit = document.getElementById('totalIngredientUnit').value;
 
-//     const newIngredient = {
-//         id: crypto.randomUUID(), 
-//         name: ingredientName,
-//         amount: ingredientAmount,
-//         unit: ingredientUnit
-//     };
-
-//     ingredients.push(newIngredient); 
-//     populateIngredientsTable(); 
-//     clearIngredientFields(); 
-// }
-
-// function populateIngredientsTable() {
-//     const table = document.getElementById('ingredientsTable');
-//     let html = `<table class="table">
-//         <tr>
-//             <th>Ingredient</th>
-//             <th>Amount</th>
-//             <th>Unit</th>
-//             <th>Delete</th>
-//         </tr>`;
-
-//     ingredients.forEach(ingredient => {
-//         html += `
-//         <tr>
-//             <td>${ingredient.name}</td>
-//             <td>${ingredient.amount}</td>
-//             <td>${ingredient.unit}</td>
-//             <td><button onclick="deleteIngredient('${ingredient.id}')" class="btn btn-danger">Delete</button></td>
-//         </tr>`;
-//     });
-
-//     html += `</table>`;
-//     table.innerHTML = html;
-// }
-
-
-
-// function clearIngredientFields() {
-//     document.getElementById('totalIngredientName').value = "";
-//     document.getElementById('totalIngredientAmount').value = "";
-//     document.getElementById('totalIngredientUnit').selectedIndex = 0; 
-// }
 function handleAddIngredient() {
     const ingredientName = document.getElementById('totalIngredientName').value;
     const ingredientAmount = document.getElementById('totalIngredientAmount').value;
