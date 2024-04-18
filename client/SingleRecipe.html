@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./css/styles.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="icon" href="./assets/img/oopsies.png" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <title>Recipe Display</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        .main-content {
+            flex: 1;
+            min-width: 60%;
+            padding: 20px;
+            background: #fff;
+            margin-right: 20px;
+        }
+        .sidebar {
+            width: 30%;
+            background: #fff;
+            padding: 20px;
+        }
+        .recipe-name {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .recipe-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .instructions, .ingredients-list {
+            margin-bottom: 20px;
+        }
+        .time-box, .price-box {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        .button-container {
+    display: flex;
+    justify-content: space-between; /* This will ensure buttons are spaced out */
+    margin-top: 10px; /* Spacing from the last box */
+}
+.button {
+    flex-grow: 1; /* Each button will take equal space */
+    margin: 5px; /* Spacing between buttons */
+    padding: 10px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none; /* Removes underline from anchor tags */
+}
+        .divider {
+            border-top: 1px solid #ccc;
+            margin: 20px 0;
+        }
+        .ingredient {
+            margin-bottom: 5px;
+            padding: 5px;
+            list-style-type: none;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body onload="handleOnLoad()">
+    <div id="SingleRecipePage"></div>
+
+    <script src="./js/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./js/SingleRecipe.js"></script>
+
+</body>
+</html>

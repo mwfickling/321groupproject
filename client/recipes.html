@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recipes - Shop By Recipe</title>
+    <link href="./css/styles.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="icon" href="./assets/img/oopsies.png" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+        }
+
+        .scroll-container {
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 20px;
+            background: white;
+        }
+
+        .scroll-item {
+            display: inline-block;
+            width: 200px;
+            height: 150px;
+            margin-right: 10px;
+            background: #ddd;
+            text-align: center;
+            vertical-align: middle;
+            line-height: 150px;
+            color: #333;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body onload="handleOnLoad()">
+  <div id="RecipePage"></div>
+    
+  <!-- <nav class="navbar navbar-expand navbar-dark bg-dark">
+    <div class="container-fluid">
+      <img src="./assets/img/oopsies.png" class="navbar-logo" />
+      <a class="navbar-brand" href="Analytics.html">Shop By Recipe</a>
+      <div class="d-flex justify-content-center flex-grow-1">
+        <a class="navbar-brand" href="./recipes.html">Recipes</a>
+        <a class="navbar-brand" href="./contact.html">Contact</a>
+        <a class="navbar-brand" href="#" id="thirdSection">Coming Soon</a>
+      </div>
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user fa-fw"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="./settings.html">Settings</a></li>
+            <li><a class="dropdown-item" href="./login.html">Login / Sign-up</a></li>
+            <li><hr class="dropdown-divider" /></li>
+            <li><a class="dropdown-item" href="./PayScreen.html">Checkout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <style>
+    .navbar-logo {
+      height: 50px;
+      width: auto;
+    }
+  </style>
+  <div class="search-container">
+    <input type="text" placeholder="Search cuisines...">
+</div>
+  <h3>Cuisine</h3>
+  <div class="scroll-container">
+    <div class="scroll-item">Italian</div>
+    <div class="scroll-item">Mexican</div>
+    <div class="scroll-item">Chinese</div>
+    <div class="scroll-item">Indian</div>
+    <div class="scroll-item">Thai</div>
+    <div class="scroll-item">TEST1</div>
+    <div class="scroll-item">TEST2</div>
+    <div class="scroll-item">TEST3</div>
+    <div class="scroll-item">TEST4</div>
+</div>
+<h3>Recipes</h3>
+<div class="scroll-container">
+    <div class="scroll-item">Italian</div>
+    <div class="scroll-item">Mexican</div>
+    <div class="scroll-item">Chinese</div>
+    <div class="scroll-item">Indian</div>
+    <div class="scroll-item">Thai</div>
+    <div class="scroll-item">TEST1</div>
+    <div class="scroll-item">TEST2</div>
+    <div class="scroll-item">TEST3</div>
+    <div class="scroll-item">TEST4</div>
+</div>
+<h3>Ingredients</h3>
+<div class="scroll-container">
+    <div class="scroll-item">Italian</div>
+    <div class="scroll-item">Mexican</div>
+    <div class="scroll-item">Chinese</div>
+    <div class="scroll-item">Indian</div>
+    <div class="scroll-item">Thai</div>
+    <div class="scroll-item">TEST1</div>
+    <div class="scroll-item">TEST2</div>
+    <div class="scroll-item">TEST3</div>
+    <div class="scroll-item">TEST4</div>
+</div>
+  <footer class="py-4 bg-light mt-auto">
+    <div class="container-fluid text-center">
+      <div class="d-flex justify-content-between small">
+        <div class="text-muted">Copyright &copy; CrimsonTech 2023</div>
+        <div>
+          <a href="#">About Us</a>
+          &middot;
+          <a href="#">Terms &amp; Conditions</a>
+        </div>
+      </div>
+    </div>
+  </footer> -->
+
+    <script src="./js/index.js"></script> <!--HAS TO BE IN THIS ORDER OR IT WONT LOAD-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./js/recipes.js"></script> 
+
+</body>
+</html>
