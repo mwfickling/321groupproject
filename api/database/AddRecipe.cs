@@ -1,4 +1,4 @@
-using MySQL.Data.MySqlClient;
+using MySql.Data.MySqlClient;
 using api.Model;
 
 namespace api.Database{
