@@ -4,7 +4,7 @@ using api.Models;
 namespace api.Database{
     public class AddRecipe{
         public void AddARecipe(Recipe newRecipe){
-            DatabaseConnection myConnection = new DatabaseConnection();
+            Database myConnection = new Database();
 
             using var con = myConnection.GetPublicConnection();
             con.Open();
