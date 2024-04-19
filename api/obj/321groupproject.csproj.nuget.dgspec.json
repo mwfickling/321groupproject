@@ -1,28 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\mwfic\\OneDrive\\Documents\\Coding-School\\MIS 321\\321groupproject\\api\\321groupproject.csproj": {}
+    "/Users/wishkasyed/Desktop/SBRProject/321groupproject/api/321groupproject.csproj": {}
   },
   "projects": {
-    "C:\\Users\\mwfic\\OneDrive\\Documents\\Coding-School\\MIS 321\\321groupproject\\api\\321groupproject.csproj": {
+    "/Users/wishkasyed/Desktop/SBRProject/321groupproject/api/321groupproject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\mwfic\\OneDrive\\Documents\\Coding-School\\MIS 321\\321groupproject\\api\\321groupproject.csproj",
+        "projectUniqueName": "/Users/wishkasyed/Desktop/SBRProject/321groupproject/api/321groupproject.csproj",
         "projectName": "321groupproject",
-        "projectPath": "C:\\Users\\mwfic\\OneDrive\\Documents\\Coding-School\\MIS 321\\321groupproject\\api\\321groupproject.csproj",
-        "packagesPath": "C:\\Users\\mwfic\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\mwfic\\OneDrive\\Documents\\Coding-School\\MIS 321\\321groupproject\\api\\obj\\",
+        "projectPath": "/Users/wishkasyed/Desktop/SBRProject/321groupproject/api/321groupproject.csproj",
+        "packagesPath": "/Users/wishkasyed/.nuget/packages/",
+        "outputPath": "/Users/wishkasyed/Desktop/SBRProject/321groupproject/api/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\mwfic\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/wishkasyed/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\sdk\\7.0.302\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -52,6 +49,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"
+            },
+            "mysql.data": {
+              "target": "Package",
+              "version": "[8.3.0, )"
             }
           },
           "imports": [
@@ -73,7 +74,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.400/RuntimeIdentifierGraph.json"
         }
       }
     }
