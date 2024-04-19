@@ -10,7 +10,7 @@ namespace api.Database{
             con.Open();
 
             //Insert the new recipe into the table
-            string stm = @"insert into recipes(recipeID, recipeName, cuisineType, instructions, numofServings, prepTime, cookTime, totalTime, recipeIMG, ingredientID) values(@recipeID, @recipeName, @cuisineType, @instructions, @numofServings, @prepTime, @cookTime, @totalTime, @recipeIMG, @ingredientID);"
+            string stm = @"insert into recipes(recipeID, recipeName, cuisineType, instructions, numofServings, prepTime, cookTime, totalTime, recipeIMG, ingredientID) values(@recipeID, @recipeName, @cuisineType, @instructions, @numofServings, @prepTime, @cookTime, @totalTime, @recipeIMG, @ingredientID);";
 
             using var cmd =  new MySqlCommand(stm, con);
 
