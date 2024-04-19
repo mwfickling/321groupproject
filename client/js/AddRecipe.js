@@ -272,6 +272,7 @@ function populateIngredientsTable() {
             <th>Ingredient</th>
             <th>Amount</th>
             <th>Unit</th>
+            <th>Price</th>
             <th>Delete</th>
         </tr>`;
 
