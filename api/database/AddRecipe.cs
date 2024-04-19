@@ -1,5 +1,5 @@
 using MySQL.Data.MySqlClient;
-using api.Models;
+using api.Model;
 
 namespace api.Database{
     public class AddRecipe{
