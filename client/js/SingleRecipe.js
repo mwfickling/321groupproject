@@ -18,7 +18,7 @@ function handleOnLoad() {
     
 
     const totalPrice = recipe.ingredients.reduce((total, ingredient) => {
-        const price = parseFloat(ingredient.unitPrice.replace('$', '')); // format is "$1.20"
+        const price = parseFloat(ingredient.unitPrice.replace('$', '')); //format is "$1.20"
         return total + price;
     }, 0);
 

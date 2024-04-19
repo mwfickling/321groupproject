@@ -29,7 +29,7 @@ function handleOnLoad(){
   if (selectedRecipe && selectedRecipe.ingredients) {
     selectedRecipe.ingredients.forEach(ingredient => {
       const price = parseFloat(ingredient.unitPrice.replace('$', '')) || 0;
-      total += price; // Sum up the total cost of ingredients
+      total += price; //Sum up the total cost of ingredients
       html += `<li class="list-group-item d-flex justify-content-between lh-condensed">
                 <div>
                   <h6 class="my-0">${ingredient.name}</h6>
@@ -205,3 +205,45 @@ function handleOnLoad(){
 }
 
 window.onload = handleOnLoad();
+
+function saveToLocalStorage() {
+  //All Billing address details, God Speed Luke
+  const billingDetails = {
+    firstName: document.getElementById('firstName').value,
+    lastName: document.getElementById('lastName').value,
+    username: document.getElementById('username').value,
+    email: document.getElementById('email').value,
+    address: document.getElementById('address').value,
+    address2: document.getElementById('address2').value,
+    country: document.getElementById('country').value,
+    state: document.getElementById('state').value,
+    zip: document.getElementById('zip').value
+  };
+
+  //All Payment details
+  const paymentDetails = {
+    cardName: document.getElementById('cc-name').value,
+    cardNumber: document.getElementById('cc-number').value,
+    expiration: document.getElementById('cc-expiration').value,
+    cvv: document.getElementById('cc-cvv').value,
+    paymentMethod: document.querySelector('input[name="paymentMethod"]:checked').id
+  };
+  
+  localStorage.setItem('billingDetails', JSON.stringify(billingDetails));
+  localStorage.setItem('paymentDetails', JSON.stringify(paymentDetails));
+  localStorage.setItem('ingredientDetails', JSON.stringify(ingredientDetails));
+}
+
+document.getElementById('checkoutForm').addEventListener('submit', function(event) {
+  //Forms naturally want to be submitted, event.preventDefault
+  //This stops the form from being submitted to the server which would cause the page to reload or navigate away
+  event.preventDefault();
+  saveToLocalStorage();
+  console.log(billingDetails)
+  console.log(paymentDetails)
+  console.log(ingredientDetails)
+  alert('Order completed!');
+  
+});
+
+
