@@ -1,22 +1,16 @@
 function handleOnLoad() {
-    const recipeId = localStorage.getItem('selectedRecipeId'); // Retrieve the recipe ID
+    const recipeId = localStorage.getItem('selectedRecipeId'); //Retrieve the recipe ID
     console.log('Retrieved Recipe ID:', recipeId); 
     const storedRecipes = localStorage.getItem('recipes');
     const recipes = JSON.parse(storedRecipes) || [];
-    const recipe = recipes.find(r => r.RecipeID === recipeId); // Find the recipe
-
-    if (!storedRecipes) {
-        console.error('No recipes found in localStorage');
-        return; 
-    }
-
+    const recipe = recipes.find(r => r.RecipeID === recipeId); //Find the recipe
 
     if (recipes.length === 0) {
         console.error('No recipes found in localStorage');
         return;
     }
 
-    const page = document.getElementById('SingleRecipePage');
+    const page = document.getElementById('SingleRecipePage'); //ChatGPT error handling
     if (!page) {
         console.error('The page element with ID \'SingleRecipePage\' was not found.');
         return;
@@ -25,7 +19,7 @@ function handleOnLoad() {
     let html = `
     <nav class="navbar navbar-expand navbar-dark bg-dark">
         <div class="container-fluid">
-            <img src="./assets/img/oopsies.png" class="navbar-logo" />
+            <img src="../assets/img/oopsies.png" class="navbar-logo" />
             <a class="navbar-brand" href="Analytics.html">Shop By Recipe</a>
             <div class="d-flex justify-content-center flex-grow-1">
                 <a class="navbar-brand" href="./recipes.html">Recipes</a>
