@@ -1,3 +1,5 @@
+const customerUrl = "http://localhost:5010/api/customers";
+
 async function handleOnLoad() {
   const orderId = 1; // Replace with the actual order ID
   const orderDetails = await getOrderDetails(orderId);
@@ -7,12 +9,19 @@ async function handleOnLoad() {
     return;
   }
 
+  const loggedInUserId = sessionStorage.getItem('loggedInUserId');
+  if (loggedInUserId) {
+    const user = await getUserInfo(loggedInUserId);
+    console.log(user);
+  }
+
   let total = 0;
   let html = `
   <div class="container">
     <div class="py-5 text-center">
       <img class="d-block mx-auto mb-4" src="../assets/img/oopsies.png" alt="" width="72" height="72">
       <h2>Checkout form</h2>
+      <button class="btn btn-primary" onclick="autofillCheckoutFields()">Autofill Checkout Fields</button>
     </div>
 
     <div class="row">
@@ -47,11 +56,11 @@ async function handleOnLoad() {
     }
 
     ingredients.forEach(ingredient => {
-      total += ingredient.unitPrice*multiplier;
+      total += ingredient.unitPrice * multiplier;
       html += `
         <li>
           <h7>${ingredient.ingredientName}</h6>
-          <small class="text-muted">${((ingredient.unitPrice)*multiplier).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</small>
+          <small class="text-muted">${(ingredient.unitPrice * multiplier).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</small>
         </li>`;
     });
 
@@ -87,19 +96,6 @@ async function handleOnLoad() {
         </div>
 
         <div class="mb-3">
-          <label for="username">Username</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">@</span>
-            </div>
-            <input type="text" class="form-control" id="username" placeholder="Username" required>
-            <div class="invalid-feedback" style="width: 100%;">
-              Your username is required.
-            </div>
-          </div>
-        </div>
-
-        <div class="mb-3">
           <label for="email">Email <span class="text-muted">(Optional)</span></label>
           <input type="email" class="form-control" id="email" placeholder="you@example.com">
           <div class="invalid-feedback">
@@ -121,39 +117,82 @@ async function handleOnLoad() {
         </div>
 
         <div class="row">
-          <div class="col-md-5 mb-3">
-            <label for="country">Country</label>
-            <select class="custom-select d-block w-100" id="country" required>
-              <option value="">Choose...</option>
-              <option>United States</option>
-            </select>
-            <div class="invalid-feedback">
-              Please select a valid country.
-            </div>
-          </div>
-          <div class="col-md-4 mb-3">
-            <label for="state">State</label>
-            <select class="custom-select d-block w-100" id="state" required>
-              <option value="">Choose...</option>
-              <option>Alabama</option>
-            </select>
-            <div class="invalid-feedback">
-              Please provide a valid state.
-            </div>
-          </div>
-          <div class="col-md-3 mb-3">
-            <label for="zip">Zip</label>
-            <input type="text" class="form-control" id="zip" placeholder="" required>
-            <div class="invalid-feedback">
-              Zip code required.
-            </div>
+        <div class="col-md-5 mb-3">
+          <label for="state">State</label>
+          <select class="custom-select d-block w-100" id="state" required>
+            <option value="">Choose...</option>
+            <option>Alabama</option>
+            <option>Alaska</option>
+            <option>Arizona</option>
+            <option>Arkansas</option>
+            <option>California</option>
+            <option>Colorado</option>
+            <option>Connecticut</option>
+            <option>Delaware</option>
+            <option>Florida</option>
+            <option>Georgia</option>
+            <option>Hawaii</option>
+            <option>Idaho</option>
+            <option>Illinois</option>
+            <option>Indiana</option>
+            <option>Iowa</option>
+            <option>Kansas</option>
+            <option>Kentucky</option>
+            <option>Louisiana</option>
+            <option>Maine</option>
+            <option>Maryland</option>
+            <option>Massachusetts</option>
+            <option>Michigan</option>
+            <option>Minnesota</option>
+            <option>Mississippi</option>
+            <option>Missouri</option>
+            <option>Montana</option>
+            <option>Nebraska</option>
+            <option>Nevada</option>
+            <option>New Hampshire</option>
+            <option>New Jersey</option>
+            <option>New Mexico</option>
+            <option>New York</option>
+            <option>North Carolina</option>
+            <option>North Dakota</option>
+            <option>Ohio</option>
+            <option>Oklahoma</option>
+            <option>Oregon</option>
+            <option>Pennsylvania</option>
+            <option>Rhode Island</option>
+            <option>South Carolina</option>
+            <option>South Dakota</option>
+            <option>Tennessee</option>
+            <option>Texas</option>
+            <option>Utah</option>
+            <option>Vermont</option>
+            <option>Virginia</option>
+            <option>Washington</option>
+            <option>West Virginia</option>
+            <option>Wisconsin</option>
+            <option>Wyoming</option>            
+            <!-- Add options for all 50 states here -->
+          </select>
+          <div class="invalid-feedback">
+            Please provide a valid state.
           </div>
         </div>
-        <hr class="mb-4">
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="same-address">
-          <label class="custom-control-label" for="same-address">Shipping address is the same as my billing address</label>
+        <div class="col-md-4 mb-3">
+          <label for="city">City</label>
+          <input type="text" class="form-control" id="city" placeholder="" required>
+          <div class="invalid-feedback">
+            City is required.
+          </div>
         </div>
+        <div class="col-md-3 mb-3">
+          <label for="zip">Zip</label>
+          <input type="text" class="form-control" id="zip" placeholder="" required>
+          <div class="invalid-feedback">
+            Zip code required.
+          </div>
+        </div>
+      </div>
+
 
         <hr class="mb-4">
         <h4 class="mb-3">Payment</h4>
@@ -223,6 +262,36 @@ async function handleOnLoad() {
   const page = document.getElementById('PayPage');
   page.innerHTML = html;
 }
+
+async function autofillCheckoutFields() {
+  const userId = sessionStorage.getItem('loggedInUserId'); // Assuming you store the logged-in user ID in sessionStorage
+
+  const userInfo = await getUserInfo(userId);
+
+  if (userInfo) {
+    document.getElementById('firstName').value = userInfo.firstName;
+    document.getElementById('lastName').value = userInfo.lastName;
+    document.getElementById('email').value = userInfo.userEmail;
+    document.getElementById('address').value = userInfo.address;
+    document.getElementById('state').value = userInfo.region;
+    document.getElementById('city').value = userInfo.city;
+    document.getElementById('zip').value = userInfo.postalCode;
+  }
+}
+
+async function getUserInfo(userId) {
+  try {
+    const response = await fetch(`${customerUrl}/${userId}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch user: ${response.status} ${response.statusText}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    return null;
+  }
+}
+
 
 // Function to fetch order details by order ID
 async function getOrderDetails(orderId) {

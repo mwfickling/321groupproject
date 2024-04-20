@@ -1,5 +1,7 @@
-function handleOnLoad(){
-    const page = document.getElementById('loginPage')
+const customerUrl = "http://localhost:5010/api/customers";
+
+function handleOnLoad() {
+    const page = document.getElementById('loginPage');
     let html = `<div id="layoutAuthentication">
     <div id="layoutAuthentication_content">
         <main>
@@ -9,7 +11,7 @@ function handleOnLoad(){
                         <div class="card shadow-lg border-0 rounded-lg mt-5">
                             <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
                             <div class="card-body">
-                                <form>
+                                <form id="loginForm">
                                     <div class="form-floating mb-3">
                                         <input class="form-control" id="inputEmail" type="email" placeholder="name@example.com" />
                                         <label for="inputEmail">Email address</label>
@@ -24,7 +26,7 @@ function handleOnLoad(){
                                     </div>
                                     <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
                                         <a class="small" href="password.html">Forgot Password?</a>
-                                        <a class="btn btn-primary" href="index.html">Login</a>
+                                        <button type="submit" class="btn btn-primary">Login</button>
                                     </div>
                                 </form>
                             </div>
@@ -40,17 +42,69 @@ function handleOnLoad(){
     <div id="layoutAuthentication_footer">
         <footer class="py-4 bg-light mt-auto">
             <div class="container-fluid text-center">
-              <div class="d-flex justify-content-between small">
-                <div class="text-muted">Copyright &copy; CrimsonTech 2023</div>
-                <div>
-                  <a href="#">About Us</a>
-                  &middot;
-                  <a href="#">Terms &amp; Conditions</a>
+                <div class="d-flex justify-content-between small">
+                    <div class="text-muted">Copyright &copy; CrimsonTech 2023</div>
+                    <div>
+                        <a href="#">About Us</a>
+                        &middot;
+                        <a href="#">Terms &amp; Conditions</a>
+                    </div>
                 </div>
-              </div>
             </div>
-          </footer>
+        </footer>
     </div>
-</div>`
+</div>`;
+
     page.innerHTML = html;
+
+    // Add event listener for form submission
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', handleLogin);
 }
+
+async function handleLogin(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Get user input
+    const email = document.getElementById('inputEmail').value;
+    const password = document.getElementById('inputPassword').value;
+
+    // Perform authentication (replace this with your actual authentication logic)
+    const isAuthenticated = await authenticateUser(email, password);
+
+    if (isAuthenticated) {
+        // Redirect user back to the previous page or dashboard
+        const redirectUrl = sessionStorage.getItem('redirectUrl') || 'recipes.html';
+        window.location.href = redirectUrl;
+    } else {
+        // Display error message or prompt user to try again
+        alert('Invalid email or password. Please try again.');
+    }
+}
+
+async function authenticateUser(email, password) {
+    try {
+        // Get customer by email
+        const response = await fetch(`${customerUrl}/getCustomerByEmail?email=${encodeURIComponent(email)}`);
+        
+        if (!response.ok) {
+            // If response status is not okay, throw an error
+            throw new Error(`Failed to fetch customer: ${response.status} ${response.statusText}`);
+        }
+
+        const customer = await response.json();
+
+        // If customer is found and password matches, authentication is successful
+        if (customer && customer.userPassword === password) {
+            // Store the logged-in customer's userId in session storage
+            sessionStorage.setItem('loggedInUserId', customer.userID);
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error('Error authenticating user:', error);
+        return false; // Return false in case of any errors
+    }
+}
+

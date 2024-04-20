@@ -1,4 +1,5 @@
 const recipeUrl = "http://localhost:5010/api/recipes";
+const customerUrl = "http://localhost:5010/api/customers";
 let recipeIDs = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -8,10 +9,37 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById('clearFiltersLink').addEventListener('click', clearFilters);
   document.getElementById('feelingLuckyBtn').addEventListener('click', () => {
     showConfirmationPopup();
-});
+  });
 
+  // Log the logged-in user
+  const loggedInUserId = sessionStorage.getItem('loggedInUserId');
+  if (loggedInUserId) {
+    const user = await getUserInfo(loggedInUserId);
+    if (user) {
+      const fullName = `${user.firstName} ${user.lastName}`;
+      updateLoginSignUpLink(fullName);
+    }
+  }
 });
+async function getUserInfo(userId) {
+  try {
+    const response = await fetch(`${customerUrl}/${userId}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch user: ${response.status} ${response.statusText}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    return null;
+  }
+}
 
+function updateLoginSignUpLink(userName) {
+  const loginSignUpItem = document.getElementById('loginSignUpItem');
+  if (loginSignUpItem) {
+    loginSignUpItem.innerHTML = `<a class="dropdown-item" href="#">${userName}</a>`;
+  }
+}
 async function getAllRecipes() {
   let response = await fetch(recipeUrl);
   return await response.json();
@@ -56,9 +84,7 @@ async function populateRecipeCards() {
         </div>`;
       recipeCardsContainer.innerHTML += cardHtml;
     });
-  }
-  
-  
+}
 
 async function populateCuisineFilter() {
   const recipes = await getAllRecipes();
@@ -79,10 +105,9 @@ function clearFilters() {
     document.getElementById('searchInput').value = '';
     document.getElementById('cuisineFilter').value = 'All';
     populateRecipeCards();
-  }
-  
+}
 
-  function showConfirmationPopup() {
+function showConfirmationPopup() {
     const confirmation = confirm('Ready to try your luck at a random recipe?');
     if (confirmation) {
         showRandomRecipe();
