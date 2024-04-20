@@ -13,6 +13,20 @@
       z-index: 1030; 
     }
 
+
+    .quantity-stepper {
+    display: inline-flex;
+    align-items: center;
+}
+
+.quantity-stepper input {
+    width: 60px; /* Adjust the width as needed */
+    margin-right: 0px; /* Add some spacing between the input and the button */
+}
+
+#addToCartBtn {
+    margin-left: 10px; /* Add some spacing between the button and the quantity stepper */
+}
     .navbar-logo {
       height: 50px; 
       width: auto;
@@ -161,9 +175,18 @@
                 <h3>Price Per Serving</h3>
                 <p id="pricePerServing"></p>
             </div>
+            
+            <div class="quantity-stepper">
+                <input type="number" id="quantityInput" class="form-control" value="1" min="1">
+                <button id="addToCartBtn" class="btn btn-primary">Add to Cart</button>
+
+            </div>
+            <br>
+            <br>
             <a href="#ingredientsList" id="viewIngredientsBtn" class="button">View Ingredients</a>
-            <a href="./PayScreen.html" id="checkoutBtn" class="button">Checkout</a>
-        </div>
+
+            
+            
     </div>
     <footer class="py-4 bg-light mt-auto">
         <div class="container-fluid text-center">

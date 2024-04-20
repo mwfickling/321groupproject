@@ -49,7 +49,7 @@ async function populateRecipeCards() {
               <h5 class="card-title">${recipe.recipeName}</h5>
               <p class="card-text">Cuisine: ${recipe.cuisineType}</p>
               <p class="card-text">Total Time: ${recipe.totalTime}</p>
-              <a href="SingleRecipe.html?id=${recipe.id}" class="btn btn-primary btn-view-recipe">View Recipe</a>
+              <a href="SingleRecipe.html?id=${recipe.recipeID}" class="btn btn-primary btn-view-recipe">View Recipe</a>
 
             </div>
           </div>
@@ -64,7 +64,7 @@ async function populateCuisineFilter() {
   const recipes = await getAllRecipes();
   const cuisineOptions = new Set(recipes.map(recipe => recipe.cuisineType));
   const cuisineFilter = document.getElementById('cuisineFilter');
-  cuisineFilter.innerHTML = '<option value="All">All</option>'; s
+  cuisineFilter.innerHTML = '<option value="All">All</option>';
 
   cuisineOptions.forEach(option => {
     const optionElement = document.createElement('option');
@@ -92,11 +92,11 @@ function clearFilters() {
 
 async function showRandomRecipe() {
     const recipes2 = await getAllRecipes();
-    const recipeIds = recipes2.map(recipe => recipe.id);
+    const recipeIds = recipes2.map(recipe => recipe.recipeID);
     const randomRecipeId = getRandomItemFromArray(recipeIds);
-    const randomRecipe = recipes2.find(recipe => recipe.id === randomRecipeId);
+    const randomRecipe = recipes2.find(recipe => recipe.recipeID === randomRecipeId);
     if (randomRecipe) {
-        window.location.href = `SingleRecipe.html?id=${randomRecipe.id}`;
+        window.location.href = `SingleRecipe.html?id=${randomRecipe.recipeID}`;
     } else {
         console.error('Random recipe not found.');
     }

@@ -10,7 +10,7 @@ namespace api.Models
 {
     public class Recipe
     {
-        public int id { get; set; }
+        public int recipeID { get; set; }
         public string recipeName { get; set; }
         public string cuisineType { get; set; }
         public string instructions { get; set; }
@@ -19,7 +19,6 @@ namespace api.Models
         public string cookTime { get; set; }
         public string totalTime { get; set; }
         public string recipeIMG { get; set; }
-        public int ingredientID { get; set; }
         public bool deleteRecipe { get; set; }
 
         public static Recipe GetRandomRecipeFromDatabase()
@@ -38,7 +37,7 @@ namespace api.Models
                     {
                         randomRecipe = new Recipe
                         {
-                            id = rdr.GetInt32(0),
+                            recipeID = rdr.GetInt32(0),
                             recipeName = rdr.GetString(1),
                             cuisineType = rdr.GetString(2),
                             instructions = rdr.GetString(3),
@@ -47,8 +46,7 @@ namespace api.Models
                             cookTime = rdr.GetString(6),
                             totalTime = rdr.GetString(7),
                             recipeIMG = rdr.GetString(8),
-                            ingredientID = rdr.GetInt32(9),
-                            deleteRecipe = rdr.GetBoolean(10)
+                            deleteRecipe = rdr.GetBoolean(9)
                         };
                     }
                 }
@@ -57,16 +55,16 @@ namespace api.Models
             return randomRecipe;
         }
 
-        public static Recipe GetRecipeFromDatabaseById(int id)
+        public static Recipe GetRecipeFromDatabaseById(int recipeID)
         {
             Recipe recipe = null;
             Database database = new Database();
 
             using (var con = database.GetPublicConnection())
             {
-                string query = "SELECT * FROM RECIPES WHERE recipeID = @id";
+                string query = "SELECT * FROM RECIPES WHERE recipeID = @recipeID";
                 MySqlCommand cmd = new MySqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@recipeID", recipeID);
 
                 using (MySqlDataReader rdr = cmd.ExecuteReader())
                 {
@@ -74,7 +72,7 @@ namespace api.Models
                     {
                         recipe = new Recipe
                         {
-                            id = rdr.GetInt32(0),
+                            recipeID = rdr.GetInt32(0),
                             recipeName = rdr.GetString(1),
                             cuisineType = rdr.GetString(2),
                             instructions = rdr.GetString(3),
@@ -83,8 +81,7 @@ namespace api.Models
                             cookTime = rdr.GetString(6),
                             totalTime = rdr.GetString(7),
                             recipeIMG = rdr.GetString(8),
-                            ingredientID = rdr.GetInt32(9),
-                            deleteRecipe = rdr.GetBoolean(10)
+                            deleteRecipe = rdr.GetBoolean(9)
                         };
                     }
                 }
@@ -105,7 +102,7 @@ namespace api.Models
                 {
                     myRecipes.Add(new Recipe()
                     {
-                        id = rdr.GetInt32(0),
+                        recipeID = rdr.GetInt32(0),
                         recipeName = rdr.GetString(1),
                         cuisineType = rdr.GetString(2),
                         instructions = rdr.GetString(3),
@@ -114,8 +111,7 @@ namespace api.Models
                         cookTime = rdr.GetString(6),
                         totalTime = rdr.GetString(7),
                         recipeIMG = rdr.GetString(8),
-                        ingredientID = rdr.GetInt32(9),
-                        deleteRecipe = rdr.GetBoolean(10)
+                        deleteRecipe = rdr.GetBoolean(9)
                     });
                 }
             }

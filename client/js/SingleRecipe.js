@@ -1,3 +1,5 @@
+const orderDetailUrl = "http://localhost:5010/api/orderdetail";
+
 document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     const recipeId = urlParams.get('id');
@@ -87,3 +89,50 @@ async function getIngredientsByRecipeId(recipeId) {
     throw error;
   }
 }
+
+function decrementQuantity() {
+    let quantity = parseInt(document.getElementById('quantityInput').value);
+    if (quantity > 1) {
+      quantity--;
+      document.getElementById('quantityInput').value = quantity;
+    }
+  }
+  
+  function incrementQuantity() {
+    let quantity = parseInt(document.getElementById('quantityInput').value);
+    quantity++;
+    document.getElementById('quantityInput').value = quantity;
+  }
+  
+  // Function to extract recipe ID from URL
+  function getRecipeIdFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('id');
+  }
+
+  async function addToCart(orderID, recipeID, qty, unitPrice) {
+    let orderDetail = {
+        orderID: parseInt(orderID),
+        recipeID: parseInt(recipeID),
+        qty: parseInt(qty),
+        unitPrice: parseFloat(unitPrice)
+    };
+    await saveOrderDetail(orderDetail);
+    }
+
+    async function saveOrderDetail(orderDetail){
+        await fetch(orderDetailUrl, {
+            method: "POST",
+            body: JSON.stringify(orderDetail),
+            headers: {"Content-type": "application/json; charset=UTF-8"}
+        })
+    
+    }
+    
+    document.getElementById('addToCartBtn').addEventListener('click', () => {
+        const recipeId = getRecipeIdFromURL();
+        const orderID = 1; // Replace with the actual order ID
+        const qty = parseInt(document.getElementById('quantityInput').value);
+        const unitPrice = parseFloat(document.getElementById('totalPrice').textContent.replace('$', ''));
+        addToCart(orderID, recipeId, qty, unitPrice);
+    });

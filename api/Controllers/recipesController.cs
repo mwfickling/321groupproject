@@ -20,11 +20,11 @@ namespace api.Controllers
             return Recipe.getAllRecipes();
         }
 
-        // GET: api/movies/{id}
-        [HttpGet("{id}")]
-        public ActionResult<Recipe> Get(int id)
+        // GET: api/movies/{recipeID}
+        [HttpGet("{recipeID}")]
+        public ActionResult<Recipe> Get(int recipeID)
         {
-            var recipe = Recipe.GetRecipeFromDatabaseById(id);
+            var recipe = Recipe.GetRecipeFromDatabaseById(recipeID);
 
             if (recipe == null)
             {
@@ -43,7 +43,7 @@ namespace api.Controllers
         }
 
         // PUT: api/Books/5
-        [HttpPut("{id}")]
+        [HttpPut("{recipeID}")]
         public void Put([FromBody] Recipe value)
         {
             RecipeHandler dh = new RecipeHandler();
@@ -51,11 +51,11 @@ namespace api.Controllers
         }
 
         // DELETE: api/Books/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{recipeID}")]
+        public void Delete(int recipeID)
         {
             RecipeHandler dh = new RecipeHandler();
-            dh.DeleteRecipe(id);
+            dh.DeleteRecipe(recipeID);
         }
     }
 }
