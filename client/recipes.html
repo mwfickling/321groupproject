@@ -1,120 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Recipes - Shop By Recipe</title>
-    <link href="./css/styles.css" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipes</title>
+  <link href="./css/styles.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="icon" href="../assets/img/oopsies.png" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+  <style>
+    .card-img-top {
+      height: 200px !important; 
+      object-fit: cover; 
+    }
+    .navbar {
+      z-index: 1030; 
+    }
 
-        body, html {
-            width: 100%;
-            height: 100%;
-            font-family: Arial, sans-serif;
-            background: #f0f0f0;
-        }
+    .navbar-logo {
+      height: 50px; 
+      width: auto;
+    }
+    .btn-view-recipe {
+  background-color: #006400; 
+  border-color: #006400; 
+}
+.btn-view-recipe:hover {
+  background-color: #004d00; 
+  border-color: #004d00; 
+}
 
-        .scroll-container {
-            overflow-x: auto;
-            white-space: nowrap;
-            padding: 20px;
-            background: white;
-        }
-
-        .scroll-item {
-            display: inline-block;
-            width: 200px;
-            height: 150px;
-            margin-right: 10px;
-            background: #ddd;
-            text-align: center;
-            vertical-align: middle;
-            line-height: 150px;
-            color: #333;
-            font-size: 24px;
-        }
-    </style>
+    #noRecipesFoundMessage {
+  margin-top: 20px; 
+}
+  </style>
 </head>
-<body onload="handleOnLoad()">
-  <div id="RecipePage"></div>
-    
-  <!-- <nav class="navbar navbar-expand navbar-dark bg-dark">
+
+<body>
+  <nav class="navbar navbar-expand navbar-dark bg-dark">
     <div class="container-fluid">
-      <img src="./assets/img/oopsies.png" class="navbar-logo" />
+      <img src="../assets/img/oopsies.png" class="navbar-logo" />
       <a class="navbar-brand" href="Analytics.html">Shop By Recipe</a>
       <div class="d-flex justify-content-center flex-grow-1">
         <a class="navbar-brand" href="./recipes.html">Recipes</a>
         <a class="navbar-brand" href="./contact.html">Contact</a>
-        <a class="navbar-brand" href="#" id="thirdSection">Coming Soon</a>
+        <a class="navbar-brand" href="#howItWorks" id="thirdSection">Services</a>
       </div>
       <ul class="navbar-nav">
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a
+            class="nav-link dropdown-toggle"
+            id="navbarDropdown"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
             <i class="fas fa-user fa-fw"></i>
           </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="./settings.html">Settings</a></li>
-            <li><a class="dropdown-item" href="./login.html">Login / Sign-up</a></li>
+          <ul
+            class="dropdown-menu dropdown-menu-end"
+            aria-labelledby="navbarDropdown"
+          >
+            <li>
+              <a class="dropdown-item" href="./settings.html">Settings</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="./login.html">Login / Sign-up</a>
+            </li>
             <li><hr class="dropdown-divider" /></li>
-            <li><a class="dropdown-item" href="./PayScreen.html">Checkout</a></li>
+            <li>
+              <a class="dropdown-item" href="./PayScreen.html">Checkout</a>
+            </li>
           </ul>
         </li>
       </ul>
     </div>
   </nav>
-  <style>
-    .navbar-logo {
-      height: 50px;
-      width: auto;
-    }
-  </style>
-  <div class="search-container">
-    <input type="text" placeholder="Search cuisines...">
-</div>
-  <h3>Cuisine</h3>
-  <div class="scroll-container">
-    <div class="scroll-item">Italian</div>
-    <div class="scroll-item">Mexican</div>
-    <div class="scroll-item">Chinese</div>
-    <div class="scroll-item">Indian</div>
-    <div class="scroll-item">Thai</div>
-    <div class="scroll-item">TEST1</div>
-    <div class="scroll-item">TEST2</div>
-    <div class="scroll-item">TEST3</div>
-    <div class="scroll-item">TEST4</div>
-</div>
-<h3>Recipes</h3>
-<div class="scroll-container">
-    <div class="scroll-item">Italian</div>
-    <div class="scroll-item">Mexican</div>
-    <div class="scroll-item">Chinese</div>
-    <div class="scroll-item">Indian</div>
-    <div class="scroll-item">Thai</div>
-    <div class="scroll-item">TEST1</div>
-    <div class="scroll-item">TEST2</div>
-    <div class="scroll-item">TEST3</div>
-    <div class="scroll-item">TEST4</div>
-</div>
-<h3>Ingredients</h3>
-<div class="scroll-container">
-    <div class="scroll-item">Italian</div>
-    <div class="scroll-item">Mexican</div>
-    <div class="scroll-item">Chinese</div>
-    <div class="scroll-item">Indian</div>
-    <div class="scroll-item">Thai</div>
-    <div class="scroll-item">TEST1</div>
-    <div class="scroll-item">TEST2</div>
-    <div class="scroll-item">TEST3</div>
-    <div class="scroll-item">TEST4</div>
-</div>
+  <div class="container mt-4">
+    <h1 class="mb-4">Recipes</h1>
+
+    <div class="mb-4">
+      <p>Search by recipe name, or surprise yourself with a random one!</p>
+
+      <div class="input-group">
+        <input type="text" id="searchInput" class="form-control" placeholder="Enter recipe name">
+        <button class="btn btn-success" id="feelingLuckyBtn">I'm Feeling Lucky!</button>
+      </div>
+    </div>
+    <div class="mb-4">
+      <p>Filter by cuisine:</p>
+      <select id="cuisineFilter" class="form-select" aria-label="Cuisine Filter">
+        <option value="All">All</option>
+      </select>
+    </div>
+    <div id="recipeCards" class="row row-cols-1 row-cols-md-3 g-4">
+    </div>
+    <div id="noRecipesFoundMessage" class="text-center">No Recipes Found</div>
+    <a href="#" id="clearFiltersLink" class="btn btn-link" style="display: none;">Clear Filters</a>
+  </div>
   <footer class="py-4 bg-light mt-auto">
     <div class="container-fluid text-center">
       <div class="d-flex justify-content-between small">
@@ -126,11 +110,8 @@
         </div>
       </div>
     </div>
-  </footer> -->
-
-    <script src="./js/index.js"></script> <!--HAS TO BE IN THIS ORDER OR IT WONT LOAD-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="./js/recipes.js"></script> 
-
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="./js/recipes.js"></script>
 </body>
 </html>

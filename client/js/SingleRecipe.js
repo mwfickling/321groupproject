@@ -1,94 +1,89 @@
-function handleOnLoad() {
-    const recipeId = localStorage.getItem('selectedRecipeId'); //Retrieve the recipe ID
-    console.log('Retrieved Recipe ID:', recipeId); 
-    const storedRecipes = localStorage.getItem('recipes');
-    const recipes = JSON.parse(storedRecipes) || [];
-    const recipe = recipes.find(r => r.RecipeID === recipeId); //Find the recipe
-
-    if (recipes.length === 0) {
-        console.error('No recipes found in localStorage');
-        return;
+document.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const recipeId = urlParams.get('id');
+    if (recipeId) {
+        fetchRecipeDetails(recipeId);
+    } else {
+        console.error('Recipe ID not provided.');
     }
+});
 
-    const page = document.getElementById('SingleRecipePage'); //ChatGPT error handling
-    if (!page) {
-        console.error('The page element with ID \'SingleRecipePage\' was not found.');
-        return;
-    }
+async function fetchRecipeDetails(recipeId) {
+    try {
+        const recipeResponse = await fetch(`http://localhost:5010/api/recipes/${recipeId}`);
+        if (!recipeResponse.ok) {
+            throw new Error('Failed to fetch recipe details.');
+        }
+        const recipe = await recipeResponse.json();
+
+        document.getElementById('recipeImg').src = recipe.recipeIMG;
+        document.getElementById('recipe-name').textContent = recipe.recipeName;
+        document.getElementById('RecipeInstructions').textContent = recipe.instructions;
+        document.getElementById('prepTime').textContent = recipe.prepTime;
+        document.getElementById('cookTime').textContent = recipe.cookTime;
+        document.getElementById('totalTime').textContent = recipe.totalTime;
+
+        const ingredients = await getIngredientsByRecipeId(recipeId);
+
+
+
+const recipeIngredients = document.getElementById('recipeIngredients');
+
+ingredients.forEach(ingredient => {
+    const li = document.createElement('li');
+    li.classList.add('ingredient');
+
+
+    const img = document.createElement('img');
+    img.src = ingredient.ingredientIMG;
+    img.style.width = '35px';
+    img.style.height = 'auto';
+    img.style.marginRight = '5px';
+    li.appendChild(img);
+
+
+    const textNode = document.createTextNode(`${ingredient.ingredientName} - $${parseFloat(ingredient.unitPrice).toFixed(2)}`);
+    li.appendChild(textNode);
+
+
+    recipeIngredients.appendChild(li);
+});
+
+
+        const totalPrice = ingredients.reduce((total, ingredient) => {
+            const price = parseFloat(ingredient.unitPrice);
+            return total + price;
+        }, 0);
+        console.log('Total Price:', totalPrice);
+console.log('Number of Servings:', recipe.numofServings);
+        const pricePerServing = totalPrice / recipe.numofServings;
+        
+        document.getElementById('totalPrice').textContent = `$${totalPrice.toFixed(2)}`;
+        document.getElementById('pricePerServing').textContent = `$${pricePerServing.toFixed(2)}`;
     
 
-    const totalPrice = recipe.ingredients.reduce((total, ingredient) => {
-        const price = parseFloat(ingredient.unitPrice.replace('$', '')); //format is "$1.20"
-        return total + price;
-    }, 0);
+        document.getElementById('viewIngredientsBtn').addEventListener('click', () => {
+            document.getElementById('ingredientsList').scrollIntoView({ behavior: "smooth" });
+        });
 
-  
-    const pricePerServing = (totalPrice / recipe.numOfServings).toFixed(2); //toFixed acts as a double
+        document.getElementById('checkoutBtn').addEventListener('click', () => {
+            window.location.href = "./PayScreen.html"; 
+        });
 
-    let html = `
-    <nav class="navbar navbar-expand navbar-dark bg-dark">
-        ...
-    </nav>
-    <style>
-        .navbar-logo {
-            height: 48px;
-            width: auto;
-            object-fit: contain;
-        }
-    </style>
-    <div class="container">
-        <div class="main-content">
-            <h1 class="recipe-name">${recipe.recipename}</h1>
-            <img src="${recipe.strImageSource}" alt="${recipe.recipename}" class="recipe-image">
-            <div class="instructions">
-                <h2>Instructions</h2>
-                <p>${recipe.instructions}</p>
-            </div>
-            <div class="ingredients-list" id="ingredientsList">
-                <h3>Ingredients</h3>
-                <ul>`;
-    recipe.ingredients.forEach(ingredient => {
-        html += `<li class="ingredient">${ingredient.name} - ${ingredient.measure}</li>`;
-    });
-    html += `       </ul>
-            </div>
-        </div>
-        <div class="sidebar">
-            <div class="time-box">
-                <h3>Prep Time</h3>
-                <p>${recipe.prepTime}</p>
-            </div>
-            <div class="time-box">
-                <h3>Cook Time</h3>
-                <p>${recipe.cookTime}</p>
-            </div>
-            <div class="time-box">
-                <h3>Total Time</h3>
-                <p>${recipe.totalTime}</p>
-            </div>
-            <div class="price-box">
-                <h3>Total Price</h3>
-                <p>$${totalPrice.toFixed(2)}</p>
-            </div>
-            <div class="price-box">
-                <h3>Price Per Serving</h3>
-                <p>$${pricePerServing}</p>
-            </div>
-            <a href="#ingredientsList" class="button">View Ingredients</a>
-            <a href="./PayScreen.html" class="button">Checkout</a>
-        </div>
-    </div>
-    <footer class="py-4 bg-light mt-auto">
-        ...
-    </footer>`;
-
-    page.innerHTML = html;
+    } catch (error) {
+        console.error('Error fetching recipe details:', error.message);
+    }
 }
-  function saveToLocalStorage(key, value) { //key = first value, value= second value
-    localStorage.setItem(key, JSON.stringify(value));
+
+async function getIngredientsByRecipeId(recipeId) {
+  try {
+    const response = await fetch(`http://localhost:5010/api/ingredients/${recipeId}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch ingredients.');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching ingredients:', error.message);
+    throw error;
   }
-  
-  saveToLocalStorage('recipes', recipes);
-  saveToLocalStorage('ingredients', ingredients);
-  console.log(recipes)
-  console.log(ingredients)
+}

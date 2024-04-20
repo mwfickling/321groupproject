@@ -9,6 +9,14 @@
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <title>Recipe Display</title>
     <style>
+            .navbar {
+      z-index: 1030; 
+    }
+
+    .navbar-logo {
+      height: 50px; 
+      width: auto;
+    }
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -79,11 +87,98 @@
     </style>
 </head>
 <body onload="handleOnLoad()">
-    <div id="SingleRecipePage"></div>
-
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+        <div class="container-fluid">
+          <img src="../assets/img/oopsies.png" class="navbar-logo" />
+          <a class="navbar-brand" href="Analytics.html">Shop By Recipe</a>
+          <div class="d-flex justify-content-center flex-grow-1">
+            <a class="navbar-brand" href="./recipes.html">Recipes</a>
+            <a class="navbar-brand" href="./contact.html">Contact</a>
+            <a class="navbar-brand" href="#howItWorks" id="thirdSection">Services</a>
+          </div>
+          <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                id="navbarDropdown"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="fas fa-user fa-fw"></i>
+              </a>
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="navbarDropdown"
+              >
+                <li>
+                  <a class="dropdown-item" href="./settings.html">Settings</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="./login.html">Login / Sign-up</a>
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item" href="./PayScreen.html">Checkout</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    <div class="container">
+        <div class="main-content">
+            <h1 id="recipe-name" class="recipe-name"></h1>
+            <img id="recipeImg" class="recipe-image" alt="">
+            <div id="RecipeInst" class="instructions">
+                <h2>Instructions</h2>
+                <p id="RecipeInstructions"></p>
+            </div>
+            <div class="ingredients-list" id="ingredientsList">
+                <h3>Ingredients</h3>
+                <ul id="recipeIngredients"></ul>
+            </div>
+        </div>
+        <div class="sidebar">
+            <div class="time-box">
+                <h3>Prep Time</h3>
+                <p id="prepTime"></p>
+            </div>
+            <div class="time-box">
+                <h3>Cook Time</h3>
+                <p id="cookTime"></p>
+            </div>
+            <div class="time-box">
+                <h3>Total Time</h3>
+                <p id="totalTime"></p>
+            </div>
+            <div class="price-box">
+                <h3>Total Price</h3>
+                <p id="totalPrice"></p>
+            </div>
+            <div class="price-box">
+                <h3>Price Per Serving</h3>
+                <p id="pricePerServing"></p>
+            </div>
+            <a href="#ingredientsList" id="viewIngredientsBtn" class="button">View Ingredients</a>
+            <a href="./PayScreen.html" id="checkoutBtn" class="button">Checkout</a>
+        </div>
+    </div>
+    <footer class="py-4 bg-light mt-auto">
+        <div class="container-fluid text-center">
+          <div class="d-flex justify-content-between small">
+            <div class="text-muted">Copyright &copy; CrimsonTech 2023</div>
+            <div>
+              <a href="#">About Us</a>
+              &middot;
+              <a href="#">Terms &amp; Conditions</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     <script src="./js/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./js/SingleRecipe.js"></script>
-
 </body>
 </html>

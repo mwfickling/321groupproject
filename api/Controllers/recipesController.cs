@@ -4,43 +4,58 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using api.Models;
+using _321groupproject.data;
 
-namespace _321groupproject.Controllers
+namespace api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Recipes")]
     [ApiController]
-    public class recipesController : ControllerBase
+    public class RecipesController : ControllerBase
     {
-        // GET: api/recipes
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public List<Recipe> Get() // new
         {
-            return new string[] { "value1", "value2" };
+            return Recipe.getAllRecipes();
         }
 
-        // GET: api/recipes/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        // GET: api/movies/{id}
+        [HttpGet("{id}")]
+        public ActionResult<Recipe> Get(int id)
         {
-            return "value";
+            var recipe = Recipe.GetRecipeFromDatabaseById(id);
+
+            if (recipe == null)
+            {
+                return NotFound(); // Recipe not found
+            }
+
+            return recipe;
         }
 
-        // POST: api/recipes
+        // POST: api/Books
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Recipe value)
         {
+            RecipeHandler dh = new RecipeHandler();
+            dh.SaveRecipe(value);
         }
 
-        // PUT: api/recipes/5
+        // PUT: api/Books/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put([FromBody] Recipe value)
         {
+            RecipeHandler dh = new RecipeHandler();
+            dh.UpdateRecipe(value);
         }
 
-        // DELETE: api/recipes/5
+        // DELETE: api/Books/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            RecipeHandler dh = new RecipeHandler();
+            dh.DeleteRecipe(id);
         }
     }
 }
