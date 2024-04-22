@@ -1,80 +1,83 @@
 const customerUrl = "http://localhost:5010/api/customers";
+let cart = JSON.parse(localStorage.getItem('cart')) || []; // Get cart items from local storage
 
-async function handleOnLoad() {
-  const orderId = 1; // Replace with the actual order ID
-  const orderDetails = await getOrderDetails(orderId);
+        async function handleOnLoad() {
 
-  if (!orderDetails || orderDetails.length === 0) {
-    console.error('No order details found for order ID:', orderId);
-    return;
-  }
+            // Combine items with the same recipeID and sum their quantities
+            const combinedCart = {};
+            cart.forEach(item => {
+                if (combinedCart[item.recipeID]) {
+                    combinedCart[item.recipeID].qty += item.qty;
+                } else {
+                    combinedCart[item.recipeID] = item;
+                }
+            });
 
-  const loggedInUserId = sessionStorage.getItem('loggedInUserId');
-  if (loggedInUserId) {
-    const user = await getUserInfo(loggedInUserId);
-    console.log(user);
-  }
+            cart = Object.values(combinedCart);
+            console.log(cart)
 
-  let total = 0;
-  let html = `
-  <div class="container">
-    <div class="py-5 text-center">
-      <img class="d-block mx-auto mb-4" src="../assets/img/oopsies.png" alt="" width="72" height="72">
-      <h2>Checkout form</h2>
-      <button class="btn btn-primary" onclick="autofillCheckoutFields()">Autofill Checkout Fields</button>
-    </div>
+            if (cart.length === 0) {
+                console.error('Cart is empty.');
+                return;
+            }
 
-    <div class="row">
-      <div class="col-md-4 order-md-2 mb-4">
-        <h4 class="d-flex justify-content-between align-items-center mb-3">
-          <span class="text-muted">Your cart</span>
-        </h4>
-        <ul class="list-group mb-3">`;
+            let total = 0;
+            let html = `
+            <div class="container">
+                <div class="py-5 text-center">
+                    <img class="d-block mx-auto mb-4" src="../assets/img/oopsies.png" alt="" width="72" height="72">
+                    <h2>Checkout form</h2>
+                    <button class="btn btn-primary" onclick="autofillCheckoutFields()">Autofill Checkout Fields</button>
+                </div>
 
-  // Loop through each order detail and fetch recipe details
-  for (const orderDetail of orderDetails) {
-    const recipeId = orderDetail.recipeID;
-    const multiplier = orderDetail.qty;
-    const recipe = await getRecipeById(recipeId);
+                <div class="row">
+                    <div class="col-md-4 order-md-2 mb-4">
+                        <h4 class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Your cart</span>
+                        </h4>
+                        <ul class="list-group mb-3">`;
 
-    if (!recipe) {
-      console.error('Recipe not found for recipe ID:', recipeId);
-      continue;
-    }
+            for (const item of cart) {
+                const recipe = await getRecipeById(item.recipeID);
 
-    html += `
-      <li class="list-group-item">
-      <h5>${recipe.recipeName} <small class="text-muted">(x${multiplier})</small></h5>
-      <ul class="list-unstyled">`;
+                if (!recipe) {
+                    console.error('Recipe not found for recipe ID:', item.recipeID);
+                    continue;
+                }
 
-    // Fetch ingredients for the recipe
-    const ingredients = await getIngredientsByRecipeId(recipeId);
+                html += `
+                <li class="list-group-item">
+                    <h5>${recipe.recipeName} <small class="text-muted">(x${item.qty})</small></h5>
+                    <ul class="list-unstyled">`;
 
-    if (!ingredients || ingredients.length === 0) {
-      console.error('No ingredients found for recipe ID:', recipeId);
-      continue;
-    }
+                const ingredients = await getIngredientsByRecipeId(item.recipeID);
 
-    ingredients.forEach(ingredient => {
-      total += ingredient.unitPrice * multiplier;
-      html += `
-        <li>
-          <h7>${ingredient.ingredientName}</h6>
-          <small class="text-muted">${(ingredient.unitPrice * multiplier).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</small>
-        </li>`;
-    });
+                if (!ingredients || ingredients.length === 0) {
+                    console.error('No ingredients found for recipe ID:', item.recipeID);
+                    continue;
+                }
 
-    html += `
-        </ul>
-      </li>`;
-  }
+                ingredients.forEach(ingredient => {
+                    const totalPriceForIngredient = ingredient.unitPrice * item.qty;
+                    total += totalPriceForIngredient;
+                    html += `
+                    <li>
+                        <h7>${ingredient.ingredientName}</h6>
+                        <small class="text-muted">${totalPriceForIngredient.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</small>
+                    </li>`;
+                });
 
-  html += `
-    </ul>
-    <div>Total: $${total.toFixed(2)}</div>
-  </div>
+                html += `
+                </ul>
+            </li>`;
+            }
 
-        <div class="col-md-8 order-md-1">
+            html += `
+                        </ul>
+                        <div>Total: $${total.toFixed(2)}</div>
+                    </div>
+
+                    <div class="col-md-8 order-md-1">
       <div class="col-md-8 order-md-1">
       <h4 class="mb-3">Billing address</h4>
       <form class="needs-validation" novalidate id="checkoutForm">
@@ -192,7 +195,21 @@ async function handleOnLoad() {
           </div>
         </div>
       </div>
-
+      <div class="col-md-8 order-md-1">
+      <h4 class="mb-3">Retailer Selection</h4>
+      <form class="needs-validation" novalidate id="checkoutForm">
+          <div class="mb-3">
+          <label for="retailer">Where do you want to get your order from?</label>
+          <select class="custom-select d-block w-100" id="retailer" onchange="updateButton(this.value)" required>
+              <option value="">Choose...</option>
+              <option value="Publix">Publix</option>
+              <option value="Target">Target</option>
+              <option value="Whole Foods">Whole Foods</option>
+          </select>
+              <div class="invalid-feedback">
+                  Please select a retailer.
+              </div>
+          </div>
 
         <hr class="mb-4">
         <h4 class="mb-3">Payment</h4>
@@ -240,11 +257,10 @@ async function handleOnLoad() {
           </div>
         </div>
         <hr class="mb-4">
-        <button class="btn btn-primary btn-lg btn-block" type="submit">Send to Publix</button>
-      </form>
+        <button class="btn btn-primary btn-lg btn-block" type="button" id="sendOrderBtn" onclick="handleCheckout(cart)" disabled>Select Retailer</button>
+        </form>
     </div>
   </div>
-</div>
 
 <footer class="py-4 bg-light mt-auto">
   <div class="container-fluid text-center">
@@ -256,6 +272,7 @@ async function handleOnLoad() {
         <a href="#">Terms &amp; Conditions</a>
       </div>
     </div>
+  </div>
   </div>
 </footer>`;
 
@@ -334,6 +351,113 @@ async function getIngredientsByRecipeId(recipeId) {
     return null;
   }
 }
+
+// Function to update the button text based on selected retailer
+function updateButton(selectedRetailer) {
+  const sendOrderBtn = document.getElementById('sendOrderBtn');
+  
+  if (selectedRetailer !== '') {
+      sendOrderBtn.disabled = false;
+      sendOrderBtn.textContent = `Send to ${selectedRetailer}`;
+  } else {
+      sendOrderBtn.disabled = true;
+      sendOrderBtn.textContent = 'Select Retailer';
+  }
+}
+
+async function handleCheckout(updatedCart) {
+  console.log("CART");
+  console.log(updatedCart);
+  try {
+      const userId = sessionStorage.getItem('loggedInUserId');
+      const orderDate = new Date().toISOString();
+
+      const orderResponse = await fetch('http://localhost:5010/api/order', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              userID: userId,
+              orderDate: orderDate,
+              shippedDate: orderDate // Assuming shipped date is the same as order date
+          })
+      });
+
+      if (!orderResponse.ok) {
+          throw new Error('Failed to create order.');
+      }
+
+      //const orderData = await orderResponse.json();
+      //const orderId = orderData.orderID;
+
+      // Check if orderData is empty
+      // if (!orderId) {
+      //     throw new Error('Empty response received when creating order.');
+      // }
+
+      // Prepare order details
+      const orderDetails = [];
+      const highestOrderResponse = await fetch('http://localhost:5010/api/Order/highestOrderID');
+      const highestOrderID = await highestOrderResponse.json();
+      for (const item of updatedCart) {
+          const recipe = await getRecipeById(item.recipeID);
+
+          if (!recipe) {
+              console.error('Recipe not found for recipe ID:', item.recipeID);
+              continue;
+          }
+
+          const ingredients = await getIngredientsByRecipeId(item.recipeID);
+
+          if (!ingredients || ingredients.length === 0) {
+              console.error('No ingredients found for recipe ID:', item.recipeID);
+              continue;
+          }
+
+          // Calculate total unit price for the recipe based on ingredient prices
+          const totalUnitPrice = ingredients.reduce((total, ingredient) => total + (ingredient.unitPrice), 0);
+
+          const orderItem = {
+              orderID: highestOrderID,
+              recipeID: item.recipeID,
+              qty: item.qty,
+              unitPrice: totalUnitPrice
+          };
+
+          const saveOrderDetailsResponse = await fetch(`http://localhost:5010/api/orderdetail`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(orderItem)
+      });
+      }
+
+      // Save order details
+      console.log(orderDetails)
+      // const saveOrderDetailsResponse = await fetch(`http://localhost:5010/api/orderdetail`, {
+      //     method: 'POST',
+      //     headers: {
+      //         'Content-Type': 'application/json'
+      //     },
+      //     body: JSON.stringify(orderDetails)
+      // });
+
+      // if (!saveOrderDetailsResponse.ok) {
+      //     throw new Error('Failed to save order details.');
+      // }
+
+      alert('Your order has been successfully placed!');
+      localStorage.removeItem('cart'); // Clear the cart from localStorage
+  } catch (error) {
+      console.error('Error during checkout:', error);
+      alert('Failed to complete checkout. Please try again later.');
+  }
+}
+
+
+
 
 handleOnLoad();
 

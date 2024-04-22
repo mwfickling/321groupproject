@@ -42,6 +42,20 @@ namespace api.Controllers
             dh.SaveOrder(value);
         }
 
+        [HttpGet("highestOrderID")]
+        public ActionResult<int> GetHighestOrderID()
+        {
+            var allOrders = Order.GetAllOrders();
+
+            if (allOrders == null || allOrders.Count == 0)
+            {
+                return NotFound(); // No orders found
+            }
+
+            int highestOrderID = allOrders.Max(order => order.orderID);
+            return highestOrderID;
+        }
+
         // PUT: api/Books/5
         // [HttpPut("{id}")]
         // public void Put([FromBody] Recipe value)
