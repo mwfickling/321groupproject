@@ -20,6 +20,18 @@ namespace api.Controllers
             return Order.GetAllOrders();
         }
 
+        [HttpGet("user/{userId}")]
+        public ActionResult<List<Order>> GetOrdersByUserId(int userId)
+        {
+            var orders = Order.GetOrdersByUserId(userId);
+
+            if (orders == null || orders.Count == 0)
+            {
+                return NotFound(); // No orders found for the given user
+            }
+
+            return orders;
+        }
         // GET: api/movies/{id}
         [HttpGet("{id}")]
         public ActionResult<Order> Get(int id)

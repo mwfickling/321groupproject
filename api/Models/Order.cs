@@ -71,5 +71,36 @@ namespace api.Models
             return orders;
         }
 
+        public static List<Order> GetOrdersByUserId(int userId)
+        {
+            List<Order> orders = new List<Order>();
+            Database database = new Database();
+
+            using (var con = database.GetPublicConnection())
+            {
+                string query = "SELECT * FROM ORDERS WHERE userID = @userId";
+                MySqlCommand cmd = new MySqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@userId", userId);
+
+                using (MySqlDataReader rdr = cmd.ExecuteReader())
+                {
+                    while (rdr.Read())
+                    {
+                        Order order = new Order
+                        {
+                            orderID = rdr.GetInt32(0),
+                            userID = rdr.GetInt32(1),
+                            orderDate = rdr.GetString(2),
+                            shippedDate = rdr.GetString(3)
+                        };
+                        orders.Add(order);
+                    }
+                }
+            }
+
+            return orders;
+        }
+
+
     }
 }
