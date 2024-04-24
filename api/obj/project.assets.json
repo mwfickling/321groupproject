@@ -9874,19 +9874,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/luke/.nuget/packages/": {}
+    "/Users/wishkasyed/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/luke/source/repos/321groupproject/api/321groupproject.csproj",
+      "projectUniqueName": "/Users/wishkasyed/Desktop/SBRProject/321groupproject/api/321groupproject.csproj",
       "projectName": "321groupproject",
-      "projectPath": "/Users/luke/source/repos/321groupproject/api/321groupproject.csproj",
-      "packagesPath": "/Users/luke/.nuget/packages/",
-      "outputPath": "/Users/luke/source/repos/321groupproject/api/obj/",
+      "projectPath": "/Users/wishkasyed/Desktop/SBRProject/321groupproject/api/321groupproject.csproj",
+      "packagesPath": "/Users/wishkasyed/.nuget/packages/",
+      "outputPath": "/Users/wishkasyed/Desktop/SBRProject/321groupproject/api/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/luke/.nuget/NuGet/NuGet.Config"
+        "/Users/wishkasyed/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
@@ -9946,7 +9946,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.405/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.400/RuntimeIdentifierGraph.json"
       }
     }
   }
