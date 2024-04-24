@@ -310,7 +310,6 @@ async function getUserInfo(userId) {
 }
 
 
-// Function to fetch order details by order ID
 async function getOrderDetails(orderId) {
   try {
     const response = await fetch(`http://localhost:5010/api/orderdetail/${orderId}`);
@@ -324,7 +323,6 @@ async function getOrderDetails(orderId) {
   }
 }
 
-// Function to fetch recipe details by recipe ID
 async function getRecipeById(recipeId) {
   try {
     const response = await fetch(`http://localhost:5010/api/recipes/${recipeId}`);
@@ -338,7 +336,6 @@ async function getRecipeById(recipeId) {
   }
 }
 
-// Function to fetch ingredients by recipe ID
 async function getIngredientsByRecipeId(recipeId) {
   try {
     const response = await fetch(`http://localhost:5010/api/ingredients/${recipeId}`);
@@ -352,7 +349,6 @@ async function getIngredientsByRecipeId(recipeId) {
   }
 }
 
-// Function to update the button text based on selected retailer
 function updateButton(selectedRetailer) {
   const sendOrderBtn = document.getElementById('sendOrderBtn');
   

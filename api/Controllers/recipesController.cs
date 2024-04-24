@@ -57,5 +57,19 @@ namespace api.Controllers
             RecipeHandler dh = new RecipeHandler();
             dh.DeleteRecipe(recipeID);
         }
+
+        [HttpGet("nextRecipeId")]
+        public ActionResult<int> GetNextRecipeId()
+        {
+            var allRecipes = Recipe.getAllRecipes();
+
+            if (allRecipes == null || allRecipes.Count == 0)
+            {
+                return NotFound(); // No orders found
+            }
+
+            int highestRecipeID = allRecipes.Max(recipe => recipe.recipeID);
+            return highestRecipeID + 1;
+        }
     }
 }

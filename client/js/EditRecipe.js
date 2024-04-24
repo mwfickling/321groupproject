@@ -1,4 +1,4 @@
-function handleOnLoad(){
+async function handleOnLoad(){
     const page = document.getElementById('EditRecipePage')
     let html = `<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
           
@@ -86,10 +86,20 @@ function handleOnLoad(){
         <main>
             <div class="container-fluid px-4">
                 <h1 class="mt-4">Edit Recipe</h1>
-                <ol class="breadcrumb mb-4">
-                    <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Edit Recipe</li>
-                </ol>
+                <div class="card">
+                    <div class="card-header">
+                        Select Recipe to Edit
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="selectRecipe">Select Recipe:</label>
+                            <select id="selectRecipe" class="form-control" onchange="populateRecipeFields()">
+                                <option value="">Select a recipe</option>
+                                <!-- Options will be dynamically populated here -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-header">
                         New Recipe
@@ -101,18 +111,11 @@ function handleOnLoad(){
                         <input type="text" id="recipeName" name="recipeName" class="form-control">
                     </div>
                 
-                    <div class="mb-3">
-                        <label for="orderID">Order ID:</label>
-                        <input type="text" id="orderID" name="orderID" class="form-control">
-                    </div>
                 
                     <div class="mb-3">
                         <label for="cuisineType">Cuisine Type:</label>
-                        <select id="cuisineType" name="cuisineType" class="form-control">
-                            <option value="Italian">Italian</option>
-                            <option value="Mexican">Mexican</option>
-                            <option value="Chinese">Chinese</option>
-                        </select>
+                        <input type="text" id="cuisineType" name="cuisineType" class="form-control">
+
                     </div>
                 
                     <div class="mb-3">
@@ -121,8 +124,8 @@ function handleOnLoad(){
                     </div>
                 
                     <div class="mb-3">
-                        <label for="numOfServings">Number of Servings:</label>
-                        <input type="number" id="numOfServings" name="numOfServings" class="form-control">
+                        <label for="numofServings">Number of Servings:</label>
+                        <input type="number" id="numofServings" name="numofServings" class="form-control">
                     </div>
                 
                     <div class="mb-3">
@@ -197,8 +200,7 @@ function handleOnLoad(){
     </div>
 </div>`
     page.innerHTML = html;
-    ingredients = []; 
-    populateIngredientsTable();
+    populateRecipeDropdown();
 }
 
 function handleAddIngredient() {
@@ -229,34 +231,97 @@ function deleteIngredient(id) {
     populateIngredientsTable();
 }
 
-function populateIngredientsTable() {
-    const table = document.getElementById('ingredientsTable');
-    let html = `<table class="table">
-        <tr>
-            <th>Ingredient</th>
-            <th>Amount</th>
-            <th>Unit</th>
-            <th>Delete</th>
-        </tr>`;
-
-    const activeIngredients = ingredients.filter(ingredient => !ingredient.deleted);
-
-    activeIngredients.forEach(ingredient => {
-        html += `
-        <tr>
-            <td>${ingredient.name}</td>
-            <td>${ingredient.amount}</td>
-            <td>${ingredient.unit}</td>
-            <td><button onclick="deleteIngredient('${ingredient.id}')" class="btn btn-danger">Delete</button></td>
-        </tr>`;
-    });
-
-    html += `</table>`;
-    table.innerHTML = html;
-}
 
 function clearIngredientFields() {
     document.getElementById('totalIngredientName').value = "";
     document.getElementById('totalIngredientAmount').value = "";
     document.getElementById('totalIngredientUnit').selectedIndex = 0;
+}
+
+async function populateRecipeDropdown() {
+    const selectRecipe = document.getElementById('selectRecipe');
+
+    try {
+        const response = await fetch('http://localhost:5010/api/recipes');
+        if (!response.ok) {
+            throw new Error('Failed to fetch recipes');
+        }
+        const recipes = await response.json();
+
+        selectRecipe.innerHTML = '';
+
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Select a recipe';
+        selectRecipe.appendChild(defaultOption);
+
+        recipes.forEach(recipe => {
+            const option = document.createElement('option');
+            option.value = recipe.recipeID; 
+            option.textContent = recipe.recipeName;
+            selectRecipe.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error fetching recipes:', error);
+    }
+}
+async function populateRecipeFields() {
+    const selectedRecipeId = document.getElementById('selectRecipe').value;
+
+    const response = await fetch(`http://localhost:5010/api/recipes/${selectedRecipeId}`);
+   const recipe = await response.json();
+
+    if (recipe) {
+        document.getElementById('recipeName').value = recipe.recipeName;
+        document.getElementById('cuisineType').value = recipe.cuisineType;
+        document.getElementById('instructions').value = recipe.instructions;
+        document.getElementById('numofServings').value = recipe.numofServings;
+        document.getElementById('prepTime').value = recipe.prepTime;
+        document.getElementById('cookTime').value = recipe.cookTime;
+        document.getElementById('totalTime').value = recipe.totalTime;
+        document.getElementById('strImageSource').value = recipe.recipeIMG;
+        populateIngredientsTable();
+    } else {
+        document.getElementById('recipeName').value = '';
+        document.getElementById('cuisineType').value = '';
+        document.getElementById('instructions').value = '';
+        document.getElementById('numofServings').value = '';
+        document.getElementById('prepTime').value = '';
+        document.getElementById('cookTime').value = '';
+        document.getElementById('totalTime').value = '';
+        document.getElementById('strImageSource').value = '';
+    }
+}
+
+async function populateIngredientsTable() {
+    const selectedRecipeId = document.getElementById('selectRecipe').value;
+
+    try {
+        const response = await fetch(`http://localhost:5010/api/ingredients/${selectedRecipeId}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch ingredients');
+        }
+        const ingredients = await response.json();
+
+        const table = document.getElementById('ingredientsTable');
+        let html = `<table class="table">
+            <tr>
+                <th>Ingredient</th>
+                <th>Price</th>
+            </tr>`;
+
+        ingredients.forEach(ingredient => {
+            html += `
+            <tr>
+                <td>${ingredient.ingredientName}</td>
+                <td>${ingredient.unitPrice}</td>
+                
+            </tr>`;
+        });
+
+        html += `</table>`;
+        table.innerHTML = html;
+    } catch (error) {
+        console.error('Error fetching ingredients:', error);
+    }
 }

@@ -150,7 +150,7 @@ async function populateOrderHistory(orderHistoryData) {
             const ingredientsUl = document.createElement('ul');
             for (const ingredient of ingredients) {
                 const ingredientLi = document.createElement('li');
-                ingredientLi.textContent = `Ingredient: ${ingredient.ingredientName}, Description: ${ingredient.ingredientDescription}, Unit Price: ${ingredient.unitPrice}`;
+                ingredientLi.textContent = `Ingredient: ${ingredient.ingredientName}, Description: ${ingredient.ingredientDescripiton}, Unit Price: ${ingredient.unitPrice}`;
                 ingredientsUl.appendChild(ingredientLi);
             }
             detailLi.appendChild(ingredientsUl);
@@ -180,8 +180,6 @@ function setLoggedInUsername(firstName, lastName) {
 }
 
 async function handleLogout() {
-    // Clear logged-in user
     sessionStorage.clear();
-    // Redirect to login page
     window.location.href = 'login.html';
 }

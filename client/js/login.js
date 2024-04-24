@@ -1,12 +1,10 @@
 const customerUrl = "http://localhost:5010/api/customers";
 
 function handleOnLoad() {
-        // Check if the user is already logged in
         const loggedInUserId = sessionStorage.getItem('loggedInUserId');
         if (loggedInUserId) {
-            // Redirect the user to the settings page
             window.location.href = 'settings.html';
-            return; // Stop further execution
+            return; 
         }
     const page = document.getElementById('loginPage');
     let html = `<div id="layoutAuthentication">
@@ -60,46 +58,37 @@ function handleOnLoad() {
 
     page.innerHTML = html;
 
-    // Add event listener for form submission
     const loginForm = document.getElementById('loginForm');
     loginForm.addEventListener('submit', handleLogin);
 }
 
 async function handleLogin(event) {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault(); 
 
-    // Get user input
     const email = document.getElementById('inputEmail').value;
     const password = document.getElementById('inputPassword').value;
 
-    // Perform authentication (replace this with your actual authentication logic)
     const isAuthenticated = await authenticateUser(email, password);
 
     if (isAuthenticated) {
-        // Redirect user back to the previous page or dashboard
         const redirectUrl = sessionStorage.getItem('redirectUrl') || 'recipes.html';
         window.location.href = redirectUrl;
     } else {
-        // Display error message or prompt user to try again
         alert('Invalid email or password. Please try again.');
     }
 }
 
 async function authenticateUser(email, password) {
     try {
-        // Get customer by email
         const response = await fetch(`${customerUrl}/getCustomerByEmail?email=${encodeURIComponent(email)}`);
         
         if (!response.ok) {
-            // If response status is not okay, throw an error
             throw new Error(`Failed to fetch customer: ${response.status} ${response.statusText}`);
         }
 
         const customer = await response.json();
 
-        // If customer is found and password matches, authentication is successful
         if (customer && customer.userPassword === password) {
-            // Store the logged-in customer's userId in session storage
             sessionStorage.setItem('loggedInUserId', customer.userID);
             return true;
         } else {
@@ -107,7 +96,7 @@ async function authenticateUser(email, password) {
         }
     } catch (error) {
         console.error('Error authenticating user:', error);
-        return false; // Return false in case of any errors
+        return false; 
     }
 }
 

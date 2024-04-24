@@ -13,14 +13,14 @@ namespace api.Controllers
     [ApiController]
     public class IngredientsController : ControllerBase
     {
-
+        // GET: api/Ingredients
         [HttpGet]
-        public List<Ingredient> Get() // new
+        public List<Ingredient> Get()
         {
             return Ingredient.GetAllIngredients();
         }
 
-        // GET: api/movies/{id}
+        // GET: api/Ingredients/{id}
         [HttpGet("{id}")]
         public ActionResult<List<Ingredient>> Get(int id)
         {
@@ -34,28 +34,44 @@ namespace api.Controllers
             return ingredients;
         }
 
-        // // POST: api/Books
-        // [HttpPost]
-        // public void Post([FromBody] Recipe value)
-        // {
-        //     RecipeHandler dh = new RecipeHandler();
-        //     dh.SaveRecipe(value);
-        // }
+        [HttpGet("ByName/{name}")]
+        public ActionResult<List<Ingredient>> GetByName(string name)
+        {
+            var ingredients = Ingredient.GetIngredientsByName(name);
 
-        // // PUT: api/Books/5
-        // [HttpPut("{id}")]
-        // public void Put([FromBody] Recipe value)
-        // {
-        //     RecipeHandler dh = new RecipeHandler();
-        //     dh.UpdateRecipe(value);
-        // }
+            if (ingredients.Count == 0)
+            {
+                return NotFound(); // Ingredients not found for the given name
+            }
 
-        // // DELETE: api/Books/5
-        // [HttpDelete("{id}")]
-        // public void Delete(int id)
-        // {
-        //     RecipeHandler dh = new RecipeHandler();
-        //     dh.DeleteRecipe(id);
-        // }
+            return ingredients;
+        }
+
+        // POST: api/Ingredients
+        [HttpPost]
+        public void Post([FromBody] Ingredient value)
+        {
+            // Assuming you have a method to add ingredients to the database in your data layer
+            IngredientHandler ih = new IngredientHandler();
+            ih.SaveIngredient(value);
+        }
+
+        // PUT: api/Ingredients/{id}
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] Ingredient value)
+        {
+            // Assuming you have a method to update ingredients in the database in your data layer
+            IngredientHandler ih = new IngredientHandler();
+            ih.UpdateIngredient(value);
+        }
+
+        // DELETE: api/Ingredients/{id}
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+            // Assuming you have a method to delete ingredients from the database in your data layer
+            IngredientHandler ih = new IngredientHandler();
+            ih.DeleteIngredient(id);
+        }
     }
 }
