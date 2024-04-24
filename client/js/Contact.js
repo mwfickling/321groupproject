@@ -41,7 +41,7 @@ function handleOnLoad(){
         <p>wishka@gamil.com<br>555-2020</p>
       </div>
       <div class="col-md-4">
-        <img src="../assets/img/bre.png" class="contact-img" alt="Bre Layton" />
+        <img src="../assets/img/Bre.jpg" class="contact-img" alt="Bre Layton" />
         <h3>Bre Layton</h3>
         <p>bre@gmail.com<br>555-3030</p>
       </div>
