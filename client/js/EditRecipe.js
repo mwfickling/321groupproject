@@ -70,7 +70,10 @@ function handleOnLoad(){
                         <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                         Account Information
                     </a>
-                   
+                    <a class="nav-link" href="CustomerList.html">
+                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                    Customer List
+                </a>
                 </div>
             </div>
             <div class="sb-sidenav-footer">

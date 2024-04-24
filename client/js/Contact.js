@@ -3,7 +3,7 @@ function handleOnLoad(){
   let html = `
   <nav class="navbar navbar-expand navbar-dark bg-dark">
     <div class="container-fluid">
-      <img src="./assets/img/oopsies.png" class="navbar-logo" />
+      <img src="../assets/img/oopsies.png" class="navbar-logo" />
       <a class="navbar-brand" href="Analytics.html">Shop By Recipe</a>
       <div class="d-flex justify-content-center flex-grow-1">
         <a class="navbar-brand" href="./recipes.html">Recipes</a>

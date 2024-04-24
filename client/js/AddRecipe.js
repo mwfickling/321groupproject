@@ -75,7 +75,10 @@ function handleOnLoad() {
                         <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                         Account Information
                     </a>
-                   
+                    <a class="nav-link" href="CustomerList.html">
+                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                    Customer List
+                </a>
                 </div>
             </div>
             <div class="sb-sidenav-footer">
@@ -175,7 +178,7 @@ function handleOnLoad() {
                         <button type="button" onclick="handleAddIngredient()" id="addIngredientButton" class="btn btn-primary">Add Ingredient</button>
                     </div>
                     <div id="ingredientsTable" class="ingredients-table">
-                        <!-- Ingredients will be listed here -->
+                       
                     </div>
                 
                     <button type="submit" class="btn btn-primary">Add Recipe</button>

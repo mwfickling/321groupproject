@@ -67,11 +67,14 @@ function handleOnLoad(){
                         <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                         Edit Recipe
                     </a>
-                    <a class="nav-link" href="settings.html">
+                    <a class="nav-link" href="AdminSettings.html">
                         <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                         Account Information
                     </a>
-                   
+                    <a class="nav-link" href="CustomerList.html">
+                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                    Customer List
+                </a>
                 </div>
             </div>
             <div class="sb-sidenav-footer">
