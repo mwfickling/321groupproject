@@ -1,9 +1,12 @@
-function handleOnLoad(){
+const customerUrl = "http://localhost:5010/api/customers";
+
+
+async function handleOnLoad(){
     const page = document.getElementById('indexPage')
     let html = `<nav class="navbar navbar-expand navbar-dark bg-dark">
     <div class="container-fluid">
       <img src="../assets/img/oopsies.png" class="navbar-logo" />
-      <a class="navbar-brand" href="Analytics.html">Shop By Recipe</a>
+      <a class="navbar-brand" href="index.html">Shop By Recipe</a>
       <div class="d-flex justify-content-center flex-grow-1">
         <a class="navbar-brand" href="./recipes.html">Recipes</a>
         <a class="navbar-brand" href="./contact.html">Contact</a>
@@ -26,14 +29,14 @@ function handleOnLoad(){
             aria-labelledby="navbarDropdown"
           >
             <li>
-              <a class="dropdown-item" href="./settings.html">Settings</a>
+              <a class="dropdown-item" id="loginSignUpItem" href="./login.html">Login / Sign-up</a>
             </li>
-            <li>
-              <a class="dropdown-item" href="./login.html">Login / Sign-up</a>
-            </li>
+            <li id="adminSettingsOption" style="display: none;">
+            <a class="dropdown-item" href="adminSettings.html">Admin Settings</a>
+        </li>
             <li><hr class="dropdown-divider" /></li>
             <li>
-              <a class="dropdown-item" href="./PayScreen.html">Checkout</a>
+              <a class="dropdown-item" href="./PayScreen.html">Shopping Cart</a>
             </li>
           </ul>
         </li>
@@ -184,6 +187,70 @@ function handleOnLoad(){
     </div>
   </footer>`
 page.innerHTML = html;
+const loggedInUserId = sessionStorage.getItem('loggedInUserId');
+if (loggedInUserId) {
+  const user = await getUserInfo(loggedInUserId);
+  if (user) {
+    const fullName = `${user.firstName} ${user.lastName}`;
+    updateLoginSignUpLink(fullName);
+  }
+}
+
+try {
+  const response = await fetch(`http://localhost:5010/api/customers/getAdminStatusById?userId=${loggedInUserId}`);
+  if (!response.ok) {
+      throw new Error('Failed to fetch admin status');
+  }
+  const isAdmin = await response.json();
+
+  // Show admin menu if user is admin, hide otherwise
+  const adminSettingsOption = document.getElementById('adminSettingsOption');
+  if (isAdmin) {
+    adminSettingsOption.style.display = 'block';
+  } else {
+    adminSettingsOption.style.display = 'none';
+  }
+
+  return isAdmin;
+} catch (error) {
+  console.error('Error checking admin status:', error);
+  return false; // Default to false if error occurs
+}
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+async function getUserInfo(userId) {
+  try {
+    const response = await fetch(`${customerUrl}/${userId}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch user: ${response.status} ${response.statusText}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    return null;
+  }
+}
+
+function updateLoginSignUpLink(userName) {
+  const loginSignUpItem = document.getElementById('loginSignUpItem');
+  if (loginSignUpItem) {
+    loginSignUpItem.innerHTML = `<a class="dropdown-item" href="settings.html">${userName}</a>`;
+  }
 }
 
 

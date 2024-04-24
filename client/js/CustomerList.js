@@ -13,24 +13,12 @@ async function getUserInfo(userId) {
   }
 }
 
-async function loadAllCustomers(userIds) {
-    const customerElements = await Promise.all(userIds.map(async id => {
-        const userInfo = await getUserInfo(id);
-   
-        if (!userInfo) return ''; //Skip if userInfo is null
-        return `
-            <tr>
-                <td>${userInfo.userID}</td>
-                <td>${userInfo.firstName} ${userInfo.lastName}</td>
-                <td>${userInfo.userEmail}</td>
-                <td>${userInfo.address}, ${userInfo.city}, ${userInfo.region}, ${userInfo.postalCode}</td>
-                <td>${userInfo.phone}</td>
-                <td><button>Admin</button></td>
-            </tr>
-        `;
-    }));
-    return customerElements
-}
+
+
+
+
+
+
 
 
 async function handleOnLoad() {
@@ -98,10 +86,6 @@ async function handleOnLoad() {
                         <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                         Edit Recipe
                     </a>
-                    <a class="nav-link" href="adminsettings.html">
-                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                        Account Information
-                    </a>
                     <a class="nav-link" href="CustomerList.html">
                     <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                     Customer List
@@ -118,20 +102,17 @@ async function handleOnLoad() {
                 <main>
                     <div class="container-fluid px-4">
                         <h1 class="mt-4">Customer List</h1>
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item"><a href="index.html">Admin Dashboard</a></li>
-                            <li class="breadcrumb-item active">Customer List</li>
-                        </ol>
+
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>User ID</th>
+                                        <th>ID</th>
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Address</th>
                                         <th>Phone</th>
-                                        <th>Is Admin</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="customerData"></tbody>
@@ -155,13 +136,101 @@ async function handleOnLoad() {
         </div>`;
 
     page.innerHTML = html;
-
-  
-    const userIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    const customersHTML = await loadAllCustomers(userIds); //Need to be await to run
-    document.getElementById('customerData').innerHTML = customersHTML;
+    loadAllCustomers();
 }
 
 document.addEventListener('DOMContentLoaded', handleOnLoad);
+
+
+
+
+async function toggleAdmin(userId) {
+    const userInfo = await getUserInfo(userId);
+    if (!userInfo) {
+        console.error('User not found');
+        return;
+    }
+    userInfo.isAdmin = !userInfo.isAdmin;
+    try {
+        const response = await fetch(`${customerUrl}/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userInfo)
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to toggle admin status: ${response.status} ${response.statusText}`);
+        }
+        // Reload customer data after toggling admin status
+        handleOnLoad();
+    } catch (error) {
+        console.error('Error toggling admin status:', error);
+        alert('Failed to toggle admin status. Please try again later.');
+    }
+}
+
+async function toggleDelete(userId) {
+    const userInfo = await getUserInfo(userId);
+    if (!userInfo) {
+        console.error('User not found');
+        return;
+    }
+    userInfo.deleteUser = !userInfo.deleteUser;
+    try {
+        const response = await fetch(`${customerUrl}/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userInfo)
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to toggle delete status: ${response.status} ${response.statusText}`);
+        }
+        // Reload customer data after toggling delete status
+        handleOnLoad();
+    } catch (error) {
+        console.error('Error toggling delete status:', error);
+        alert('Failed to toggle delete status. Please try again later.');
+    }
+}
+
+async function loadAllCustomers() {
+    try {
+        const response = await fetch(customerUrl);
+        if (!response.ok) {
+            throw new Error('Failed to fetch customers');
+        }
+        const customers = await response.json();
+        console.log(customers)
+        // Sort customers array based on userID
+        customers.sort((a, b) => a.userID - b.userID);
+
+        let customerElements = '';
+
+        // Iterate over sorted customers array
+        for (const customer of customers) {
+            customerElements += `
+                <tr>
+                    <td>${customer.userID}</td>
+                    <td>${customer.firstName} ${customer.lastName}</td>
+                    <td>${customer.userEmail}</td>
+                    <td>${customer.address}, ${customer.city}, ${customer.region}, ${customer.postalCode}</td>
+                    <td>${customer.phone}</td>
+                    <td>
+                    <button class="admin-button" onclick="toggleAdmin(${customer.userID})"><i class="fas fa-user-shield"></i> ${customer.isAdmin ? 'Remove Admin' : 'Make Admin'}</button>
+                    <button class="delete-button" onclick="toggleDelete(${customer.userID})"><i class="fas fa-trash-alt"></i> ${customer.deleteUser ? 'Restore User' : 'Delete User'}</button>
+                    <button class="reset-button" onclick="openResetPasswordDialog(${customer.userID})"><i class="fas fa-key"></i> Reset Password</button>
+                </td>
+                </tr>
+            `;
+        };
+
+        document.getElementById('customerData').innerHTML = customerElements;
+    } catch (error) {
+        console.error('Error loading customers:', error);
+    }
+}
 
 

@@ -1,6 +1,13 @@
 const customerUrl = "http://localhost:5010/api/customers";
 
 function handleOnLoad() {
+        // Check if the user is already logged in
+        const loggedInUserId = sessionStorage.getItem('loggedInUserId');
+        if (loggedInUserId) {
+            // Redirect the user to the settings page
+            window.location.href = 'settings.html';
+            return; // Stop further execution
+        }
     const page = document.getElementById('loginPage');
     let html = `<div id="layoutAuthentication">
     <div id="layoutAuthentication_content">
@@ -20,12 +27,8 @@ function handleOnLoad() {
                                         <input class="form-control" id="inputPassword" type="password" placeholder="Password" />
                                         <label for="inputPassword">Password</label>
                                     </div>
-                                    <div class="form-check mb-3">
-                                        <input class="form-check-input" id="inputRememberPassword" type="checkbox" value="" />
-                                        <label class="form-check-label" for="inputRememberPassword">Remember Password</label>
-                                    </div>
+
                                     <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                        <a class="small" href="password.html">Forgot Password?</a>
                                         <button type="submit" class="btn btn-primary">Login</button>
                                     </div>
                                 </form>

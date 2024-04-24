@@ -51,6 +51,23 @@ namespace api.Controllers
             }
         }
 
+        [HttpGet("getAdminStatusById")]
+        public ActionResult<Customer> GetAdminById(int userId)
+        {
+            // Call the GetCustomerByEmail method from the Customer class
+            bool isAdmin = Customer.IsAdmin(userId);
+            if (isAdmin != null)
+            {
+                // Return the customer details if found
+                return Ok(isAdmin);
+            }
+            else
+            {
+                // Return 404 Not Found if customer with the given email is not found
+                return NotFound();
+            }
+        }
+
         // POST: api/Books
         [HttpPost]
         public void Post([FromBody] Customer value)

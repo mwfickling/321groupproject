@@ -131,5 +131,36 @@ namespace api.Models
             }
             return customers;
         }
+
+        public static bool IsAdmin(int userID)
+        {
+            Database database = new Database();
+
+            using (var con = database.GetPublicConnection())
+            {
+                string query = "SELECT isAdmin FROM CUSTOMERS WHERE userID = @userID";
+                MySqlCommand cmd = new MySqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@userID", userID);
+
+                using MySqlDataReader rdr = cmd.ExecuteReader();
+
+                // Check if there are any results
+                if (rdr.Read())
+                {
+                    // Get the value of isAdmin column
+                    object result = rdr["isAdmin"];
+
+                    // Check if the value is not null and not DBNull
+                    if (result != null && result != DBNull.Value)
+                    {
+                        return Convert.ToBoolean(result);
+                    }
+                }
+            }
+
+            // Default value if user not found or isAdmin is NULL
+            return false;
+        }
+
     }
 }

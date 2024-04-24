@@ -3,8 +3,7 @@ async function handleOnLoad() {
     const page = document.getElementById('OrderHistoryPage');
     let html = `
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-    <a class="navbar-brand ps-3" href="Analytics.html">Shop By Recipe</a>
-    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+    <a class="navbar-brand ps-3" href="recipes.html">Shop By Recipe</a>
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
         <div class="input-group">
         </div>
@@ -13,27 +12,22 @@ async function handleOnLoad() {
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#!">Settings</a></li>
-                <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                <li><a class="dropdown-item" href="settings.html">Account Settings</a></li>
+                <li><a class="dropdown-item" href="OrderHistory.html">Order History</a></li>
                 <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item" href="#!">Logout</a></li>
-            </ul>
+                <li><a class="dropdown-item" href="#" onclick="handleLogout()">Logout</a></li>            </ul>
         </li>
     </ul>
 </nav>
 <div id="layoutSidenav">
 <div id="layoutSidenav_nav">
-    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+    <nav class="sb-sidenav sb-sidenav-dark" id="sidenav">
         <div class="sb-sidenav-menu">
             <div class="nav">
                 <div class="sb-sidenav-menu-heading">Settings</div>
                 <a class="nav-link" href="settings.html">
                     <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                     Account Information
-                </a>
-                <a class="nav-link" href="./DietaryPreferences.html">
-                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                    Dietary Preferences
                 </a>
                 <a class="nav-link" href="./OrderHistory.html">
                     <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
@@ -42,25 +36,7 @@ async function handleOnLoad() {
                 
                 
                
-                <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
-                    <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
-                            Authentication
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-                            <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="login.html">Login</a>
-                                <a class="nav-link" href="register.html">Register</a>
-                                <a class="nav-link" href="password.html">Forgot Password</a>
-                            </nav>
-                        </div>
-                       
-                        <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-                           
-                        </div>
-                    </nav>
-                </div>   
+  
             </div>
         </div>
         <div class="sb-sidenav-footer">
@@ -201,4 +177,11 @@ function formatDate(timestamp) {
 function setLoggedInUsername(firstName, lastName) {
     const loggedInUsernameElement = document.getElementById('loggedInUsername');
     loggedInUsernameElement.textContent = `${firstName} ${lastName}`;
+}
+
+async function handleLogout() {
+    // Clear logged-in user
+    sessionStorage.clear();
+    // Redirect to login page
+    window.location.href = 'login.html';
 }

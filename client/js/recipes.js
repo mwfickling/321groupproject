@@ -37,7 +37,7 @@ async function getUserInfo(userId) {
 function updateLoginSignUpLink(userName) {
   const loginSignUpItem = document.getElementById('loginSignUpItem');
   if (loginSignUpItem) {
-    loginSignUpItem.innerHTML = `<a class="dropdown-item" href="#">${userName}</a>`;
+    loginSignUpItem.innerHTML = `<a class="dropdown-item" href="settings.html">${userName}</a>`;
   }
 }
 async function getAllRecipes() {
