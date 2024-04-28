@@ -1,30 +1,47 @@
-function handleOnLoad(){
+async function handleOnLoad(){
   const page = document.getElementById('ContactPage');
-  let html = `
-  <nav class="navbar navbar-expand navbar-dark bg-dark">
-    <div class="container-fluid">
-      <img src="../assets/img/oopsies.png" class="navbar-logo" />
-      <a class="navbar-brand" href="Analytics.html">Shop By Recipe</a>
-      <div class="d-flex justify-content-center flex-grow-1">
-        <a class="navbar-brand" href="./recipes.html">Recipes</a>
-        <a class="navbar-brand" href="./contact.html">Contact</a>
-        <a class="navbar-brand" href="#" id="thirdSection">Coming Soon</a>
-      </div>
-      <ul class="navbar-nav">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-user fa-fw"></i>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="./settings.html">Settings</a></li>
-            <li><a class="dropdown-item" href="./login.html">Login / Sign-up</a></li>
-            <li><hr class="dropdown-divider" /></li>
-            <li><a class="dropdown-item" href="./PayScreen.html">Checkout</a></li>
-          </ul>
-        </li>
-      </ul>
+  let html = `<nav class="navbar navbar-expand navbar-dark bg-dark">
+  <div class="container-fluid">
+    <img src="../assets/img/oopsies.png" class="navbar-logo" />
+    <a class="navbar-brand" href="index.html">Shop By Recipe</a>
+    <div class="d-flex justify-content-center flex-grow-1">
+      <a class="navbar-brand" href="./recipes.html">Recipes</a>
+      <a class="navbar-brand" href="./contact.html">Contact</a>
+      <a class="navbar-brand" href="#howItWorks" id="thirdSection">Services</a>
     </div>
-  </nav>
+    <ul class="navbar-nav">
+      <li class="nav-item dropdown">
+        <a
+          class="nav-link dropdown-toggle"
+          id="navbarDropdown"
+          href="#"
+          role="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <i class="fas fa-user fa-fw"></i>
+        </a>
+        <ul
+          class="dropdown-menu dropdown-menu-end"
+          aria-labelledby="navbarDropdown"
+        >
+          <li>
+            <a class="dropdown-item" id="loginSignUpItem" href="./login.html">Login / Sign-up</a>
+          </li>
+          <li id="adminSettingsOption" style="display: none;">
+          <a class="dropdown-item" href="analytics.html">Admin Dashboard</a>
+      </li>
+          <li><hr class="dropdown-divider" /></li>
+          <li>
+            <a class="dropdown-item" href="./PayScreen.html" id="shoppingCartBtn">Shopping Cart</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
 
 
   <div class="container text-center my-5">
@@ -84,5 +101,44 @@ function handleOnLoad(){
   </style>`;
 
   page.innerHTML = html;
+  updateCartItemCount();
+
+  // Log the logged-in user
+  const loggedInUserId = sessionStorage.getItem('loggedInUserId');
+  if (loggedInUserId) {
+    const user = await getUserInfo(loggedInUserId);
+    if (user) {
+      const fullName = `${user.firstName} ${user.lastName}`;
+      updateLoginSignUpLink(fullName);
+    }
+  }
+
+  try {
+    const response = await fetch(`http://localhost:5010/api/customers/getAdminStatusById?userId=${loggedInUserId}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch admin status');
+    }
+    const isAdmin = await response.json();
+
+    // Show admin menu if user is admin, hide otherwise
+    const adminSettingsOption = document.getElementById('adminSettingsOption');
+    if (isAdmin) {
+      adminSettingsOption.style.display = 'block';
+    } else {
+      adminSettingsOption.style.display = 'none';
+    }
+  } catch (error) {
+    console.error('Error checking admin status:', error);
+  }
 }
-//https://media.licdn.com/dms/image/D5603AQH95YeHNrm7YA/profile-displayphoto-shrink_200_200/0/1698695268490?e=2147483647&v=beta&t=S_DsDkFfh-9RwzE8G5dGWH2GhDmKEbcdqUNCjDQcuBQ
+
+function updateCartItemCount() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const cartItemCount = cart.reduce((total, item) => total + item.qty, 0);
+  const cartButton = document.getElementById('shoppingCartBtn');
+  if (cartItemCount > 0) {
+    cartButton.textContent = `Checkout (${cartItemCount})`;
+  } else {
+    cartButton.textContent = 'Checkout';
+  }
+}

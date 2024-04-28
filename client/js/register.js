@@ -76,11 +76,11 @@ function handleOnLoad() {
                                         </div>
                                     </div>
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" id="inputPhone" type="tel" placeholder="Enter your phone number" />
+                                        <input class="form-control" id="inputPhone" type="tel" placeholder="Enter your phone number (10 digits)" />
                                         <label for="inputPhone">Phone</label>
                                     </div>
                                     <div class="mt-4 mb-0">
-                                        <div class="d-grid"><button class="btn btn-primary btn-block" onclick="saveAccount()">Create Account</button></div>
+                                        <div class="d-grid"><button class="btn btn-primary btn-block">Create Account</button></div>
                                     </div>
                                 </form>
                             </div>
@@ -118,6 +118,7 @@ function handleOnLoad() {
 }
 
 
+
 async function saveAccount() {
     const lastName = document.getElementById('inputLastName').value;
     const firstName = document.getElementById('inputFirstName').value;
@@ -139,11 +140,23 @@ async function saveAccount() {
         return;
     }
 
-    // Check if email already exists
-    console.log(userEmail)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^\d{10}$/;
+
+    // Validate email and phone fields
+    if (!emailRegex.test(userEmail)) {
+        alert('Invalid email address');
+        return;
+    }
+    if (!phoneRegex.test(phone)) {
+        alert('Invalid phone number');
+        return;
+    }
+
     const existingCustomer = await fetchExistingCustomer(userEmail);
     if (existingCustomer) {
         alert('Email already exists. Please use a different email.');
+        location.reload();
         return;
     }
 
@@ -171,14 +184,10 @@ async function saveAccount() {
             },
             body: JSON.stringify(customer)
         });
-        if (!response.ok) {
-            throw new Error('Failed to create customer account');
-        }
         alert('Customer account created successfully!');
         // Redirect to settings.html
-        window.location.href = 'settings.html';
+        window.location.href = 'login.html';
     } catch (error) {
-        console.error('Error creating customer account:', error);
         alert('Failed to create customer account. Please try again later.');
     }
 }
@@ -186,10 +195,15 @@ async function saveAccount() {
 async function fetchExistingCustomer(email) {
     try {
         const response = await fetch(`http://localhost:5010/api/customers/getCustomerByEmail?email=${encodeURIComponent(email)}`);
-        const existingCustomer = await response.json();
-        console.log(existingCustomer)
-        return true;
-    } catch (error) {
+        if (response != null){
+            const existingCustomer = await response.json();
+            console.log(existingCustomer)
+            return true;
+        }
+        else{
+            return false;
+        }
+        } catch {
         return false;
     }
 }

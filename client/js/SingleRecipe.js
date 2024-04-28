@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const recipeId = urlParams.get('id');
   if (recipeId) {
@@ -6,6 +6,36 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
       console.error('Recipe ID not provided.');
   }
+
+  // Log the logged-in user
+  const loggedInUserId = sessionStorage.getItem('loggedInUserId');
+  if (loggedInUserId) {
+    const user = await getUserInfo(loggedInUserId);
+    if (user) {
+      const fullName = `${user.firstName} ${user.lastName}`;
+      updateLoginSignUpLink(fullName);
+    }
+  }
+
+  try {
+    const response = await fetch(`http://localhost:5010/api/customers/getAdminStatusById?userId=${loggedInUserId}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch admin status');
+    }
+    const isAdmin = await response.json();
+
+    // Show admin menu if user is admin, hide otherwise
+    const adminSettingsOption = document.getElementById('adminSettingsOption');
+    if (isAdmin) {
+      adminSettingsOption.style.display = 'block';
+    } else {
+      adminSettingsOption.style.display = 'none';
+    }
+  } catch (error) {
+    console.error('Error checking admin status:', error);
+  }
+  updateCartItemCount();
+
 });
 
 async function fetchRecipeDetails(recipeId) {
@@ -65,7 +95,16 @@ async function fetchRecipeDetails(recipeId) {
       console.error('Error fetching recipe details:', error.message);
   }
 }
-
+function updateLoginSignUpLink(userName, isAdmin) {
+  const loginSignUpItem = document.getElementById('loginSignUpItem');
+  if (loginSignUpItem) {
+    if (isAdmin) {
+      loginSignUpItem.innerHTML = `<a class="dropdown-item" href="admin_settings.html">${userName}</a>`;
+    } else {
+      loginSignUpItem.innerHTML = `<a class="dropdown-item" href="settings.html">${userName}</a>`;
+    }
+  }
+}
 async function getIngredientsByRecipeId(recipeId) {
   try {
       const response = await fetch(`http://localhost:5010/api/ingredients/${recipeId}`);
@@ -113,7 +152,8 @@ function addToCart(recipeID, qty, unitPrice) {
 
   // Save the updated cart back to local storage
   localStorage.setItem('cart', JSON.stringify(cart));
-  console.log(cart)
+  updateCartItemCount();
+
 
 }
 
@@ -123,3 +163,14 @@ document.getElementById('addToCartBtn').addEventListener('click', () => {
   const unitPrice = parseFloat(document.getElementById('totalPrice').textContent.replace('$', ''));
   addToCart(recipeId, qty, unitPrice);
 });
+
+function updateCartItemCount() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const cartItemCount = cart.reduce((total, item) => total + item.qty, 0);
+  const cartButton = document.getElementById('shoppingCartBtn');
+  if (cartItemCount > 0) {
+    cartButton.textContent = `Checkout (${cartItemCount})`;
+  } else {
+    cartButton.textContent = 'Checkout';
+  }
+}

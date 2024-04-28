@@ -13,20 +13,11 @@ async function getUserInfo(userId) {
   }
 }
 
-
-
-
-
-
-
-
-
 async function handleOnLoad() {
     const page = document.getElementById('CustomerListPage');
     let html = `
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-        <a class="navbar-brand ps-3" href="index.html">Shop By Recipe</a>
-        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+        <a class="navbar-brand ps-3" href="recipes.html">Shop By Recipe</a>
         <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
             <div class="input-group">
             </div>
@@ -35,11 +26,13 @@ async function handleOnLoad() {
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="settings.html">Settings</a></li>
-                    <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                <li><a class="dropdown-item" href="analytics.html">Analytics</a></li>
+                <li><a class="dropdown-item" href="addrecipe.html">Add Recipe</a></li>
+                <li><a class="dropdown-item" href="editrecipe.html">Edit Recipe</a></li>
+                <li><a class="dropdown-item" href="customerlist.html">Customers</a></li>
                     <li><hr class="dropdown-divider" /></li>
-                    <li><a class="dropdown-item" href="#!">Logout</a></li>
-                </ul>
+                    <li><a class="dropdown-item" href="#" onclick="handleLogout()">Logout</a></li>            </ul>
+                    </ul>
             </li>
         </ul>
         </nav>
@@ -49,7 +42,7 @@ async function handleOnLoad() {
             <div class="sb-sidenav-menu">
                 <div class="nav">
                     <div class="sb-sidenav-menu-heading">Core</div>
-                    <a class="nav-link" href="index.html">
+                    <a class="nav-link" href="analytics.html">
                         <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                         Analytics
                     </a>
@@ -93,9 +86,9 @@ async function handleOnLoad() {
                 </div>
             </div>
             <div class="sb-sidenav-footer">
-                <div class="small">Logged in as:</div>
-                
-            </div>
+            <div class="small">Logged in as:</div>
+            <span id="loggedInUsername">Loading...</span>
+        </div>
         </nav>
             </div>
             <div id="layoutSidenav_content">
@@ -137,7 +130,21 @@ async function handleOnLoad() {
 
     page.innerHTML = html;
     loadAllCustomers();
-}
+    try {
+        const userId = sessionStorage.getItem('loggedInUserId');
+        const userData = await fetchUserData(userId);
+        setLoggedInUsername(userData.firstName, userData.lastName);
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+    }
+    }
+    async function fetchUserData(userId) {
+    const response = await fetch(`http://localhost:5010/api/customers/${userId}`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+    }
+    return await response.json();
+    }
 
 document.addEventListener('DOMContentLoaded', handleOnLoad);
 
@@ -234,3 +241,44 @@ async function loadAllCustomers() {
 }
 
 
+function setLoggedInUsername(firstName, lastName) {
+    const loggedInUsernameElement = document.getElementById('loggedInUsername');
+    loggedInUsernameElement.textContent = `${firstName} ${lastName}`;
+}
+
+async function handleLogout() {
+    // Clear logged-in user
+    sessionStorage.clear();
+    // Redirect to login page
+    window.location.href = 'login.html';
+}
+
+function openResetPasswordDialog(userId) {
+    const newPassword = prompt('Enter the new password:');
+    if (newPassword !== null) {
+        // User clicked OK in the prompt, handle the new password
+        handleResetPassword(userId, newPassword);
+    }
+}
+
+async function handleResetPassword(userId, newPassword) {
+    const userInfo = await getUserInfo(userId);
+    if (!userInfo) {
+        console.error('User not found');
+        return;
+    }
+    userInfo.userPassword = newPassword;
+    try {
+        const response = await fetch(`${customerUrl}/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userInfo)
+        });
+        // Reload customer data after toggling delete status
+        handleOnLoad();
+    } catch (error) {
+        alert('Could not change password. Please try again later.');
+    }
+}

@@ -1,25 +1,24 @@
 const customerUrl = "http://localhost:5010/api/customers";
 let cart = JSON.parse(localStorage.getItem('cart')) || []; // Get cart items from local storage
 
-        async function handleOnLoad() {
+async function handleOnLoad() {
+  // Get cart items from local storage
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-            // Combine items with the same recipeID and sum their quantities
-            const combinedCart = {};
-            cart.forEach(item => {
-                if (combinedCart[item.recipeID]) {
-                    combinedCart[item.recipeID].qty += item.qty;
-                } else {
-                    combinedCart[item.recipeID] = item;
-                }
-            });
-
-            cart = Object.values(combinedCart);
-            console.log(cart)
-
-            if (cart.length === 0) {
-                console.error('Cart is empty.');
-                return;
-            }
+  // If cart is empty, display message and link to browse recipes
+  if (cart.length === 0) {
+      const page = document.getElementById('PayPage');
+      page.innerHTML = `
+          <div class="container">
+              <div class="py-5 text-center">
+                  <img class="d-block mx-auto mb-4" src="../assets/img/oopsies.png" alt="" width="72" height="72">
+                  <h2>Cart is empty</h2>
+                  <p>You haven't added any items to your cart yet.</p>
+                  <p><a href="recipes.html">Want to Browse Recipes?</a></p>
+              </div>
+          </div>`;
+      return;
+  }
 
             let total = 0;
             let html = `
@@ -32,9 +31,12 @@ let cart = JSON.parse(localStorage.getItem('cart')) || []; // Get cart items fro
 
                 <div class="row">
                     <div class="col-md-4 order-md-2 mb-4">
-                        <h4 class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="text-muted">Your cart</span>
+                    <div style="margin-bottom: 1em;">
+                        <h4 class="d-flex justify-content-between align-items-center">
+                            <span style="margin-bottom: 0em;" class="text-muted">Your cart</span>
                         </h4>
+                        <a href="recipes.html">Browse More Recipes</a>
+                        </div>
                         <ul class="list-group mb-3">`;
 
             for (const item of cart) {
@@ -47,8 +49,11 @@ let cart = JSON.parse(localStorage.getItem('cart')) || []; // Get cart items fro
 
                 html += `
                 <li class="list-group-item">
+                  <div class="d-flex justify-content-between">
                     <h5>${recipe.recipeName} <small class="text-muted">(x${item.qty})</small></h5>
-                    <ul class="list-unstyled">`;
+                    <button class="btn btn-danger" onclick="deleteItem(${item.recipeID})">Delete</button>
+                  </div>
+                  <ul class="list-unstyled">`;
 
                 const ingredients = await getIngredientsByRecipeId(item.recipeID);
 
@@ -213,7 +218,20 @@ let cart = JSON.parse(localStorage.getItem('cart')) || []; // Get cart items fro
 
         <hr class="mb-4">
         <h4 class="mb-3">Payment</h4>
+        <div class="col-md-6 mb-3">
+    <label for="cc-type">Card type</label>
+    <select class="custom-select" id="cc-type" required>
+        <option value="">Choose...</option>
+        <option value="visa">Visa</option>
+        <option value="mastercard">Mastercard</option>
+        <option value="amex">American Express</option>
+        <option value="discover">Discover</option>
+    </select>
+    <div class="invalid-feedback">Please select a card type.</div>
+</div>
+
         <div class="d-block my-3">
+        
           <div class="custom-control custom-radio">
             <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked required>
             <label class="custom-control-label" for="credit">Credit card</label>
@@ -223,7 +241,9 @@ let cart = JSON.parse(localStorage.getItem('cart')) || []; // Get cart items fro
             <label class="custom-control-label" for="debit">Debit card</label>
           </div>
         </div>
+        
         <div class="row">
+        
           <div class="col-md-6 mb-3">
             <label for="cc-name">Name on card</label>
             <input type="text" class="form-control" id="cc-name" placeholder="" required>
@@ -278,8 +298,42 @@ let cart = JSON.parse(localStorage.getItem('cart')) || []; // Get cart items fro
 
   const page = document.getElementById('PayPage');
   page.innerHTML = html;
-}
 
+  const ccNumberInput = document.getElementById('cc-number');
+  const ccTypeSelect = document.getElementById('cc-type'); // Added reference to the card type select element
+  
+  ccNumberInput.addEventListener('input', function(event) {
+      const ccNumber = event.target.value;
+      const selectedCardType = ccTypeSelect.value; // Get the selected card type
+      const isValid = isValidCreditCardNumber(ccNumber, selectedCardType); // Pass the selected card type to the validation function
+  
+      if (!isValid) {
+          ccNumberInput.classList.add('is-invalid');
+      } else {
+          ccNumberInput.classList.remove('is-invalid');
+      }
+  });
+  
+  function isValidCreditCardNumber(ccNumber, cardType) {
+      // Regular expression patterns for various credit card types
+      const cardPatterns = {
+          'visa': /^4[0-9]{12}(?:[0-9]{3})?$/,
+          'mastercard': /^5[1-5][0-9]{14}$/,
+          'amex': /^3[47][0-9]{13}$/,
+          'discover': /^6(?:011|5[0-9]{2})[0-9]{12}$/
+      };
+  
+      // Get the pattern for the selected card type
+      const pattern = cardPatterns[cardType];
+  
+      // Check if the credit card number matches the pattern for the selected card type
+      if (pattern && pattern.test(ccNumber)) {
+          return true;
+      } else {
+          return false;
+      }
+  }
+}
 async function autofillCheckoutFields() {
   const userId = sessionStorage.getItem('loggedInUserId'); // Assuming you store the logged-in user ID in sessionStorage
 
@@ -457,7 +511,19 @@ async function handleCheckout(updatedCart) {
 
 handleOnLoad();
 
+function deleteItem(recipeID) {
+  // Find the index of the item in the cart array
+  const index = cart.findIndex(item => item.recipeID === recipeID);
+  if (index !== -1) {
+    // Remove the item from the cart array
+    cart.splice(index, 1);
+    // Update the UI
+    // Update the local storage
+    localStorage.setItem('cart', JSON.stringify(cart));
+    handleOnLoad();
 
+  }
+}
 
 
 
@@ -490,6 +556,7 @@ handleOnLoad();
 //         <h4 class="d-flex justify-content-between align-items-center mb-3">
 //           <span class="text-muted">Your cart</span>
 //         </h4>
+
 //         <ul class="list-group mb-3">`;
 
 //   if (selectedRecipe && selectedRecipe.ingredients) {

@@ -47,7 +47,7 @@ namespace api.Controllers
             else
             {
                 // Return 404 Not Found if customer with the given email is not found
-                return NotFound();
+                return null;
             }
         }
 

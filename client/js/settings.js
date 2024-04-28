@@ -193,3 +193,4 @@ async function handleLogout() {
     // Redirect to login page
     window.location.href = 'login.html';
 }
+

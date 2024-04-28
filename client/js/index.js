@@ -32,11 +32,11 @@ async function handleOnLoad(){
               <a class="dropdown-item" id="loginSignUpItem" href="./login.html">Login / Sign-up</a>
             </li>
             <li id="adminSettingsOption" style="display: none;">
-            <a class="dropdown-item" href="adminSettings.html">Admin Settings</a>
+            <a class="dropdown-item" href="analytics.html">Admin Dashboard</a>
         </li>
             <li><hr class="dropdown-divider" /></li>
             <li>
-              <a class="dropdown-item" href="./PayScreen.html">Shopping Cart</a>
+              <a class="dropdown-item" href="./PayScreen.html" id="shoppingCartBtn">Shopping Cart</a>
             </li>
           </ul>
         </li>
@@ -45,10 +45,12 @@ async function handleOnLoad(){
   </nav>
 
 
-  <section class="bg-dark text-light p-5 text-center video-background">
+  <section class="bg-dark text-light p-5 text-center video-background" id="greenVideoContainer">
     <div class="container position-relative">
+    <div class="text-holder">
+    <h4 style="color:yellow;">Welcome to Shop by Recipe</h4>
       <h3>Your Best Cooking Friend</h3>
-      
+      <div>
       <video autoplay muted loop id="bgVideo">
         <source
           src="../assets/Videos/HomePageBackroundVideo.mp4"
@@ -100,14 +102,17 @@ async function handleOnLoad(){
       color: white;
       font-size: 3rem; 
       font-weight: bold;
-      text-shadow: 2px 2px 4px #000000;}
+  }
+      #greenVideoContainer {
+        background-color: #243407 !important;
+      }
   </style>
 
 
   <section class="bg-primary text-light p-5">
     <div class="container text-center" id="howItWorks">
       <h2>How it works</h2>
-      <p class="lead mb-5">Brief explanation of how it works.</p>
+      <p class="lead mb-5">Learn more about our simple process.</p>
       <div class="row g-4 justify-content-center">
         <div class="col-md-4">
           <div class="card bg-light" style="height: 100%">
@@ -118,7 +123,7 @@ async function handleOnLoad(){
                 alt=""
                 style="width: 200px; height: 200px"
               />
-              <h3 style="color: #000000">Choose your recipe</h3>
+              <h3 style="color: #000000">Choose a recipe</h3>
             </div>
           </div>
         </div>
@@ -131,7 +136,7 @@ async function handleOnLoad(){
                 alt=""
                 style="width: 200px; height: 200px"
               />
-              <h3 style="color: #000000">Select your provider</h3>
+              <h3 style="color: #000000">Buy ingredients</h3>
             </div>
           </div>
         </div>
@@ -144,7 +149,7 @@ async function handleOnLoad(){
                 alt=""
                 style="width: 200px; height: 200px"
               />
-              <h3 style="color: #000000">Enjoy!</h3>
+              <h3 style="color: #000000">Select a retailer</h3>
             </div>
           </div>
         </div>
@@ -153,7 +158,9 @@ async function handleOnLoad(){
   </section>
 
   <section class="p-5 bg-light text-center">
-    <h2>Explore the menu</h2>
+    <h2>Ready to shop by recipe?</h2>
+    <button class="btn btn-primary" onclick="location.href='recipes.html'">View Full Menu</button>
+
     <div class="container">
   <div class="row my-4">
     <div class="col-lg-3 col-md-6 mb-4">
@@ -170,7 +177,6 @@ async function handleOnLoad(){
     </div>
   </div>
 </div>
-      <button class="btn btn-primary" onclick="location.href='recipes.html'">View Full Menu</button>
     </div>
   </section>
 
@@ -187,6 +193,7 @@ async function handleOnLoad(){
     </div>
   </footer>`
 page.innerHTML = html;
+updateCartItemCount();
 const loggedInUserId = sessionStorage.getItem('loggedInUserId');
 if (loggedInUserId) {
   const user = await getUserInfo(loggedInUserId);
@@ -217,14 +224,6 @@ try {
   return false; // Default to false if error occurs
 }
 
-
-
-
-
-
-
-
-
 }
 
 
@@ -246,11 +245,24 @@ async function getUserInfo(userId) {
   }
 }
 
-function updateLoginSignUpLink(userName) {
+function updateLoginSignUpLink(userName, isAdmin) {
   const loginSignUpItem = document.getElementById('loginSignUpItem');
   if (loginSignUpItem) {
-    loginSignUpItem.innerHTML = `<a class="dropdown-item" href="settings.html">${userName}</a>`;
+    if (isAdmin) {
+      loginSignUpItem.innerHTML = `<a class="dropdown-item" href="admin_settings.html">${userName}</a>`;
+    } else {
+      loginSignUpItem.innerHTML = `<a class="dropdown-item" href="settings.html">${userName}</a>`;
+    }
   }
 }
 
-
+function updateCartItemCount() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const cartItemCount = cart.reduce((total, item) => total + item.qty, 0);
+  const cartButton = document.getElementById('shoppingCartBtn');
+  if (cartItemCount > 0) {
+    cartButton.textContent = `Checkout (${cartItemCount})`;
+  } else {
+    cartButton.textContent = 'Checkout';
+  }
+}

@@ -9874,19 +9874,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Bre\\.nuget\\packages\\": {}
+    "/Users/luke/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Bre\\Desktop\\Source\\Repos\\MIS321\\MIS321_GroupProject\\321groupproject\\api\\321groupproject.csproj",
+      "projectUniqueName": "/Users/luke/source/repos/321groupproject/api/321groupproject.csproj",
       "projectName": "321groupproject",
-      "projectPath": "C:\\Users\\Bre\\Desktop\\Source\\Repos\\MIS321\\MIS321_GroupProject\\321groupproject\\api\\321groupproject.csproj",
-      "packagesPath": "C:\\Users\\Bre\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Bre\\Desktop\\Source\\Repos\\MIS321\\MIS321_GroupProject\\321groupproject\\api\\obj\\",
+      "projectPath": "/Users/luke/source/repos/321groupproject/api/321groupproject.csproj",
+      "packagesPath": "/Users/luke/.nuget/packages/",
+      "outputPath": "/Users/luke/source/repos/321groupproject/api/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Bre\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/Users/luke/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
@@ -9946,7 +9946,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.405\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.405/RuntimeIdentifierGraph.json"
       }
     }
   }

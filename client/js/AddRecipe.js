@@ -1,4 +1,5 @@
 let recipes = [];
+let addedRecipeID = 0;
 
 async function handleOnLoad() {
     const storedRecipes = localStorage.getItem('recipes');
@@ -7,9 +8,8 @@ async function handleOnLoad() {
   const page = document.getElementById("AddRecipePage");
   let html = `<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
           
-    <a class="navbar-brand ps-3" href="Analytics.html">Shop By Recipe</a>
+    <a class="navbar-brand ps-3" href="recipes.html">Shop By Recipe</a>
 
-    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
  
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
         <div class="input-group">
@@ -21,10 +21,12 @@ async function handleOnLoad() {
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#!">Settings</a></li>
-                <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                <li><a class="dropdown-item" href="analytics.html">Analytics</a></li>
+                <li><a class="dropdown-item" href="addrecipe.html">Add Recipe</a></li>
+                <li><a class="dropdown-item" href="editrecipe.html">Edit Recipe</a></li>
+                <li><a class="dropdown-item" href="customerlist.html">Customers</a></li>
                 <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item" href="#!">Logout</a></li>
+                <li><a class="dropdown-item" href="#" onclick="handleLogout()">Logout</a></li>            </ul>
             </ul>
         </li>
     </ul>
@@ -41,27 +43,6 @@ async function handleOnLoad() {
                     </a>
                     
                    
-                    <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
-                                Authentication
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="login.html">Login</a>
-                                    <a class="nav-link" href="register.html">Register</a>
-                                    <a class="nav-link" href="password.html">Forgot Password</a>
-                                </nav>
-                            </div>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
-                                Error
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-                            </div>
-                        </nav>
-                    </div>
                     <div class="sb-sidenav-menu-heading">Admin Dashboard</div>
                     <a class="nav-link" href="AddRecipe.html">
                         <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
@@ -71,10 +52,6 @@ async function handleOnLoad() {
                         <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                         Edit Recipe
                     </a>
-                    <a class="nav-link" href="AdminSettings.html">
-                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                        Account Information
-                    </a>
                     <a class="nav-link" href="CustomerList.html">
                     <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                     Customer List
@@ -82,9 +59,9 @@ async function handleOnLoad() {
                 </div>
             </div>
             <div class="sb-sidenav-footer">
-                <div class="small">Logged in as:</div>
-                **USERNAME**
-            </div>
+            <div class="small">Logged in as:</div>
+            <span id="loggedInUsername">Loading...</span>
+        </div>
         </nav>
     </div>
     <div id="layoutSidenav_content">
@@ -183,8 +160,22 @@ async function handleOnLoad() {
   page.innerHTML = html;
   ingredients = []; 
   await populateIngredientsTable();
-
+  try {
+    const userId = sessionStorage.getItem('loggedInUserId');
+    const userData = await fetchUserData(userId);
+    setLoggedInUsername(userData.firstName, userData.lastName);
+} catch (error) {
+    console.error('Error fetching user data:', error);
 }
+}
+async function fetchUserData(userId) {
+const response = await fetch(`http://localhost:5010/api/customers/${userId}`);
+if (!response.ok) {
+    throw new Error('Failed to fetch user data');
+}
+return await response.json();
+}
+
 async function handleAddIngredient() {
     
     const ingredientName = document.getElementById('totalIngredientName').value;
@@ -198,7 +189,8 @@ async function handleAddIngredient() {
         await populateIngredientsTable();
 
     } else {
-        const imageURL = ''; 
+        const userInput = prompt(`Enter an image URL for ${ingredientName}:`);
+        const imageURL = userInput; 
         addNewIngredient(ingredientName, unitPrice, imageURL);
         await populateIngredientsTable();
 
@@ -259,6 +251,8 @@ async function populateIngredientsTable() {
         <tr>
             <th>Ingredient</th>
             <th>Price</th>
+            <th>Action</th>
+
         </tr>`;
 
         try {
@@ -273,6 +267,9 @@ async function populateIngredientsTable() {
                     <tr>
                         <td>${ingredient.ingredientName}</td>
                         <td>${ingredient.unitPrice}</td>
+                        <td>
+                        <button type="button" onclick="deleteIngredient(${ingredient.ingredientID})" class="btn btn-danger">Delete</button>
+                    </td>
                     </tr>`;
             });
         }
@@ -311,7 +308,6 @@ async function handleAddRecipe(event) {
         prepTime: prepTime,
         cookTime: cookTime,
         totalTime: totalTime,
-        ingredients: ingredients,
         recipeIMG: strImageSource,
         deleteRecipe: false
     };
@@ -326,5 +322,32 @@ async function handleAddRecipe(event) {
         });
 
     } catch{
+    }
+}
+function setLoggedInUsername(firstName, lastName) {
+    const loggedInUsernameElement = document.getElementById('loggedInUsername');
+    loggedInUsernameElement.textContent = `${firstName} ${lastName}`;
+}
+
+async function handleLogout() {
+    // Clear logged-in user
+    sessionStorage.clear();
+    // Redirect to login page
+    window.location.href = 'login.html';
+}
+
+async function deleteIngredient(ingredientID) {
+    try {
+        const response = await fetch(`http://localhost:5010/api/Ingredients/${ingredientID}`, {
+            method: 'DELETE'
+        });
+        if (response.ok) {
+            // Reload ingredients table after deletion
+            await populateIngredientsTable();
+        } else {
+            console.error('Failed to delete ingredient:', response.status);
+        }
+    } catch (error) {
+        console.error('Error deleting ingredient:', error);
     }
 }

@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById('feelingLuckyBtn').addEventListener('click', () => {
     showConfirmationPopup();
   });
-
+  updateCartItemCount();
   // Log the logged-in user
   const loggedInUserId = sessionStorage.getItem('loggedInUserId');
   if (loggedInUserId) {
@@ -20,7 +20,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       updateLoginSignUpLink(fullName);
     }
   }
+  
+  // Check if user is admin
+  const isAdmin = await checkAdminStatus(loggedInUserId);
+  if (isAdmin) {
+    document.getElementById('adminSettingsOption').style.display = 'block';
+  }
+
+  // Populate cuisine filter
+  populateCuisineFilter();
 });
+
 async function getUserInfo(userId) {
   try {
     const response = await fetch(`${customerUrl}/${userId}`);
@@ -33,6 +43,28 @@ async function getUserInfo(userId) {
     return null;
   }
 }
+
+async function checkAdminStatus(userId) {
+  try {
+    const response = await fetch(`${customerUrl}/getAdminStatusById?userId=${userId}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch admin status');
+    }
+    const isAdmin = await response.json();
+    return isAdmin;
+  } catch (error) {
+    console.error('Error checking admin status:', error);
+    return false;
+  }
+}
+
+function updateLoginSignUpLink(userName) {
+  const loginSignUpItem = document.getElementById('loginSignUpItem');
+  if (loginSignUpItem) {
+    loginSignUpItem.innerHTML = `<a class="dropdown-item" href="settings.html">${userName}</a>`;
+  }
+}
+
 
 function updateLoginSignUpLink(userName) {
   const loginSignUpItem = document.getElementById('loginSignUpItem');
@@ -129,4 +161,15 @@ async function showRandomRecipe() {
 
 function getRandomItemFromArray(array) {
     return array[Math.floor(Math.random() * array.length)];
+}
+
+function updateCartItemCount() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const cartItemCount = cart.reduce((total, item) => total + item.qty, 0);
+  const cartButton = document.getElementById('shoppingCartBtn');
+  if (cartItemCount > 0) {
+    cartButton.textContent = `Checkout (${cartItemCount})`;
+  } else {
+    cartButton.textContent = 'Checkout';
+  }
 }

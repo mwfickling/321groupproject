@@ -11,6 +11,63 @@
         <link href="css/styles.css" rel="stylesheet" />
         <link rel="icon" href="../assets/img/oopsies.png">
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <style>
+.order-list {
+    list-style: none;
+    padding: 0;
+}
+
+.order-item {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    position: relative;
+}
+
+.order-item:hover {
+    background-color: #e9ecef;
+}
+
+.order-item strong {
+    margin-left: 20px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.order-item strong::before {
+    content: '\25BC'; /* Unicode for down arrow */
+    margin-right: 5px;
+    position: absolute;
+    left: 10px;
+}
+
+.order-details {
+    list-style: none;
+    padding-left: 20px;
+    margin-top: 5px;
+    display: none;
+}
+
+.detail-item {
+    margin-top: 5px;
+    content: none;
+}
+
+.ingredient-list {
+    list-style: none;
+    padding-left: 20px;
+    display: none;
+}
+
+.ingredient-item {
+    margin-top: 5px;
+}
+
+
+
+        </style>
     </head>
     <body class="sb-nav-fixed" onload="handleOnLoad()">
         <div id="OrderHistoryPage" ></div>

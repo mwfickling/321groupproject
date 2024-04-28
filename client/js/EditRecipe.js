@@ -2,9 +2,7 @@ async function handleOnLoad(){
     const page = document.getElementById('EditRecipePage')
     let html = `<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
           
-    <a class="navbar-brand ps-3" href="Analytics.html">Shop By Recipe</a>
-
-    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+    <a class="navbar-brand ps-3" href="recipes.html">Shop By Recipe</a>
  
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
         <div class="input-group">
@@ -16,10 +14,12 @@ async function handleOnLoad(){
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#!">Settings</a></li>
-                <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+            <li><a class="dropdown-item" href="analytics.html">Analytics</a></li>
+            <li><a class="dropdown-item" href="addrecipe.html">Add Recipe</a></li>
+            <li><a class="dropdown-item" href="editrecipe.html">Edit Recipe</a></li>
+            <li><a class="dropdown-item" href="customerlist.html">Customers</a></li>
                 <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item" href="#!">Logout</a></li>
+                <li><a class="dropdown-item" href="#" onclick="handleLogout()">Logout</a></li>            </ul>
             </ul>
         </li>
     </ul>
@@ -66,10 +66,6 @@ async function handleOnLoad(){
                         <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                         Edit Recipe
                     </a>
-                    <a class="nav-link" href="AdminSettings.html">
-                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                        Account Information
-                    </a>
                     <a class="nav-link" href="CustomerList.html">
                     <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                     Customer List
@@ -77,9 +73,9 @@ async function handleOnLoad(){
                 </div>
             </div>
             <div class="sb-sidenav-footer">
-                <div class="small">Logged in as:</div>
-                **USERNAME**
-            </div>
+            <div class="small">Logged in as:</div>
+            <span id="loggedInUsername">Loading...</span>
+        </div>
         </nav>
     </div>
     <div id="layoutSidenav_content">
@@ -105,7 +101,7 @@ async function handleOnLoad(){
                         New Recipe
                     </div>
                     <div class="card-body">
-                    <form id="recipeForm" onsubmit="handleAddRecipe(event)">
+                    <form id="recipeForm" onsubmit="handleEditRecipe(event)">
                     <div class="mb-3">
                         <label for="recipeName">Recipe Name:</label>
                         <input type="text" id="recipeName" name="recipeName" class="form-control">
@@ -156,19 +152,9 @@ async function handleOnLoad(){
                                 <label for="totalIngredientName">Ingredient Name:</label>
                                 <input type="text" id="totalIngredientName" name="totalIngredientName" class="form-control">
                                 
-                                <label for="totalIngredientAmount">Amount:</label>
-                                <input type="number" id="totalIngredientAmount" name="totalIngredientAmount" min="1" max="9999" class="form-control">
-                                
-                                <label for="totalIngredientUnit">Unit:</label>
-                                <select id="totalIngredientUnit" name="totalIngredientUnit" class="form-control">
-                                    <option value="grams">grams</option>
-                                    <option value="kilograms">kilograms</option>
-                                    <option value="liters">liters</option>
-                                    <option value="milliliters">milliliters</option>
-                                    <option value="cups">cups</option>
-                                    <option value="tablespoons">tablespoons</option>
-                                    <option value="teaspoons">teaspoons</option>
-                                </select>
+                                <label for="totalIngredientPrice">Price:</label>
+                                <input type="number" id="totalIngredientPrice" name="totalIngredientPrice" min="1" max="9999" class="form-control">
+                            
                             </div>
                         </div>
                         <button type="button" onclick="handleAddIngredient()" id="addIngredientButton" class="btn btn-primary">Add Ingredient</button>
@@ -201,34 +187,61 @@ async function handleOnLoad(){
 </div>`
     page.innerHTML = html;
     populateRecipeDropdown();
-}
-
-function handleAddIngredient() {
-    const ingredientName = document.getElementById('totalIngredientName').value;
-    const ingredientAmount = document.getElementById('totalIngredientAmount').value;
-    const ingredientUnit = document.getElementById('totalIngredientUnit').value;
-
-    const newIngredient = {
-        id: crypto.randomUUID(),
-        name: ingredientName,
-        amount: ingredientAmount,
-        unit: ingredientUnit,
-        deleted: false
-    };
-
-    ingredients.push(newIngredient);
-    populateIngredientsTable();
-    clearIngredientFields();
-}
-
-function deleteIngredient(id) {
-    const index = ingredients.findIndex(ingredient => ingredient.id === id);
-
-    if (index !== -1) {
-        ingredients[index].deleted = true;
+    try {
+        const userId = sessionStorage.getItem('loggedInUserId');
+        const userData = await fetchUserData(userId);
+        setLoggedInUsername(userData.firstName, userData.lastName);
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+    }
+    }
+    async function fetchUserData(userId) {
+    const response = await fetch(`http://localhost:5010/api/customers/${userId}`);
+    if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+    }
+    return await response.json();
     }
 
-    populateIngredientsTable();
+    async function addNewIngredient(name, unitPrice, imageURL) {
+        const selectedRecipeId = document.getElementById('selectRecipe').value;
+        const newIngredient = {
+            recipeID: selectedRecipeId,
+            ingredientName: name,
+            ingredientDescripiton: '',
+            unitPrice: parseFloat(unitPrice), 
+            ingredientIMG: imageURL 
+        };
+        console.log(JSON.stringify(newIngredient))
+    
+        try {
+            const response = await fetch('http://localhost:5010/api/Ingredients', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newIngredient)
+            });
+        } catch{
+        }
+        await populateIngredientsTable();
+    }
+
+
+async function deleteIngredient(ingredientID) {
+    try {
+        const response = await fetch(`http://localhost:5010/api/Ingredients/${ingredientID}`, {
+            method: 'DELETE'
+        });
+        if (response.ok) {
+            // Reload ingredients table after deletion
+            await populateIngredientsTable();
+        } else {
+            console.error('Failed to delete ingredient:', response.status);
+        }
+    } catch (error) {
+        console.error('Error deleting ingredient:', error);
+    }
 }
 
 
@@ -305,17 +318,19 @@ async function populateIngredientsTable() {
 
         const table = document.getElementById('ingredientsTable');
         let html = `<table class="table">
-            <tr>
-                <th>Ingredient</th>
-                <th>Price</th>
-            </tr>`;
+        <tr>
+        <th>Ingredient</th>
+        <th>Price</th>
+        <th>Action</th> <!-- New column for delete button -->
+    </tr>`;
 
         ingredients.forEach(ingredient => {
             html += `
             <tr>
                 <td>${ingredient.ingredientName}</td>
                 <td>${ingredient.unitPrice}</td>
-                
+                <td><button onclick="deleteIngredient('${ingredient.ingredientID}')" class="btn btn-danger">Delete</button></td> <!-- Delete button -->
+
             </tr>`;
         });
 
@@ -323,5 +338,83 @@ async function populateIngredientsTable() {
         table.innerHTML = html;
     } catch (error) {
         console.error('Error fetching ingredients:', error);
+    }
+}
+
+function setLoggedInUsername(firstName, lastName) {
+    const loggedInUsernameElement = document.getElementById('loggedInUsername');
+    loggedInUsernameElement.textContent = `${firstName} ${lastName}`;
+}
+
+async function handleLogout() {
+    // Clear logged-in user
+    sessionStorage.clear();
+    // Redirect to login page
+    window.location.href = 'login.html';
+}
+async function handleEditRecipe(event) {
+    event.preventDefault(); // Prevent the default form submission behavior
+
+    const selectedRecipeId = document.getElementById('selectRecipe').value;
+    const recipeName = document.getElementById('recipeName').value;
+    const cuisineType = document.getElementById('cuisineType').value;
+    const instructions = document.getElementById('instructions').value;
+    const numofServings = document.getElementById('numofServings').value;
+    const prepTime = document.getElementById('prepTime').value;
+    const cookTime = document.getElementById('cookTime').value;
+    const totalTime = document.getElementById('totalTime').value;
+    const strImageSource = document.getElementById('strImageSource').value;
+
+    const editedRecipe = {
+        recipeID: selectedRecipeId,
+        recipename: recipeName,
+        cuisineType: cuisineType,
+        instructions: instructions,
+        numofServings: numofServings,
+        prepTime: prepTime,
+        cookTime: cookTime,
+        totalTime: totalTime,
+        recipeIMG: strImageSource,
+        deleteRecipe: false
+    };
+    console.log(editedRecipe)
+    try {
+        await fetch(`http://localhost:5010/api/recipes/${selectedRecipeId}`, {
+            method: 'PUT',
+            body: JSON.stringify(editedRecipe),
+            headers: {"Content-type": "application/json; charset=UTF-8"}
+        });
+    } catch (error) {
+        console.error('Error editing recipe:', error);
+    }
+}
+
+async function handleAddIngredient() {
+    
+    const ingredientName = document.getElementById('totalIngredientName').value;
+    const unitPrice = document.getElementById('totalIngredientPrice').value;
+
+    const matchingIngredients = await getIngredientsByName(ingredientName);
+
+    if (matchingIngredients.length > 0) {
+        const imageURL = matchingIngredients[0].ingredientIMG;
+        addNewIngredient(ingredientName, unitPrice, imageURL);
+        await populateIngredientsTable();
+
+    } else {
+        const userInput = prompt(`Enter an image URL for ${ingredientName}:`);
+        const imageURL = userInput; 
+        addNewIngredient(ingredientName, unitPrice, imageURL);
+        await populateIngredientsTable();
+
+    }
+}
+
+async function getIngredientsByName(name) {
+    const response = await fetch(`http://localhost:5010/api/Ingredients/ByName/${name}`);
+    if (response.ok) {
+        return await response.json();
+    } else {
+        return [];
     }
 }
