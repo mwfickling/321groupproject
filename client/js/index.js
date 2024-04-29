@@ -123,7 +123,7 @@ async function handleOnLoad(){
                 alt=""
                 style="width: 200px; height: 200px"
               />
-              <h3 style="color: #000000">Choose a recipe</h3>
+              <h3 style="color: #000000">Buy a recipe</h3>
             </div>
           </div>
         </div>
@@ -136,7 +136,7 @@ async function handleOnLoad(){
                 alt=""
                 style="width: 200px; height: 200px"
               />
-              <h3 style="color: #000000">Buy ingredients</h3>
+              <h3 style="color: #000000">Choose a retailer</h3>
             </div>
           </div>
         </div>
@@ -149,7 +149,7 @@ async function handleOnLoad(){
                 alt=""
                 style="width: 200px; height: 200px"
               />
-              <h3 style="color: #000000">Select a retailer</h3>
+              <h3 style="color: #000000">Enjoy your meal!</h3>
             </div>
           </div>
         </div>
