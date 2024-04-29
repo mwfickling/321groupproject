@@ -1,8 +1,26 @@
+const customerUrl = "http://localhost:5010/api/customers";
+
+async function getTotalCustomers() {
+    try {
+        const response = await fetch(customerUrl);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch total customers: ${response.status} ${response.statusText}`);
+        }
+        const data = await response.json();
+        return data.length; 
+    } catch (error) {
+        console.error('Error fetching total customers:', error);
+        return 0; 
+    }
+}
+
 async function handleOnLoad(){
     const page = document.getElementById('AnalyticsPage')
+    const totalCustomers = await getTotalCustomers();
     let html = ` <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
 
-    <a class="navbar-brand ps-3" href="recipes.html">Shop By Recipe</a>
+    <a class="navbar-brand ps-3" href="index.html">Shop By Recipe</a>
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
         <div class="input-group">
         </div>
@@ -11,12 +29,10 @@ async function handleOnLoad(){
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="analytics.html">Analytics</a></li>
-            <li><a class="dropdown-item" href="addrecipe.html">Add Recipe</a></li>
-            <li><a class="dropdown-item" href="editrecipe.html">Edit Recipe</a></li>
-            <li><a class="dropdown-item" href="customerlist.html">Customers</a></li>
+                <li><a class="dropdown-item" href="settings.html">Settings</a></li>
+                <li><a class="dropdown-item" href="#!">Activity Log</a></li>
                 <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item" href="#" onclick="handleLogout()">Logout</a></li>            </ul>
+                <li><a class="dropdown-item" href="#!">Logout</a></li>
             </ul>
         </li>
     </ul>
@@ -66,6 +82,10 @@ async function handleOnLoad(){
                         <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                         Edit Recipe
                     </a>
+                    <a class="nav-link" href="AccountInfo.html">
+                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                        Account Information
+                    </a>
                     <a class="nav-link" href="CustomerList.html">
                     <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                     Customer List
@@ -73,9 +93,9 @@ async function handleOnLoad(){
                 </div>
             </div>
             <div class="sb-sidenav-footer">
-            <div class="small">Logged in as:</div>
-            <span id="loggedInUsername">Loading...</span>
-        </div>
+                <div class="small">Logged in as:</div>
+                
+            </div>
         </nav>
     </div>
     <div id="layoutSidenav_content">
@@ -88,7 +108,7 @@ async function handleOnLoad(){
                 <div class="row">
                     <div class="col-xl-3 col-md-6">
                     <div class="card bg-warning text-white mb-4">
-                    <div class="card-body">Total Customers: 213</div>
+                    <div class="card-body">Total Customers: ${totalCustomers}</div>
                     <div  d-flex align-items-center justify-content-between">   
                             </div>
                         </div>
@@ -114,9 +134,9 @@ async function handleOnLoad(){
                     </div>
                 </div>                       
             </div>
-            </div>
         </main>
    
+    </div>
     <footer class="py-4 bg-light mt-auto">
         <div class="container-fluid">
             <div class="d-flex align-items-center justify-content-between small">
@@ -132,24 +152,7 @@ async function handleOnLoad(){
 </div>`
     page.innerHTML = html;
     initializeCharts();
-    try {
-        const userId = sessionStorage.getItem('loggedInUserId');
-        const userData = await fetchUserData(userId);
-        setLoggedInUsername(userData.firstName, userData.lastName);
-    } catch (error) {
-        console.error('Error fetching user data:', error);
-    }
 }
-async function fetchUserData(userId) {
-    const response = await fetch(`http://localhost:5010/api/customers/${userId}`);
-    if (!response.ok) {
-        throw new Error('Failed to fetch user data');
-    }
-    return await response.json();
-}
-
-
-
 function initializeCharts() {
     
 
@@ -222,16 +225,4 @@ function initializeCharts() {
             legend: { display: false }
         }
     });
-}
-
-function setLoggedInUsername(firstName, lastName) {
-    const loggedInUsernameElement = document.getElementById('loggedInUsername');
-    loggedInUsernameElement.textContent = `${firstName} ${lastName}`;
-}
-
-async function handleLogout() {
-    // Clear logged-in user
-    sessionStorage.clear();
-    // Redirect to login page
-    window.location.href = 'login.html';
 }

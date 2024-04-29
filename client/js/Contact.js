@@ -44,36 +44,34 @@ async function handleOnLoad(){
 
 
 
-  <div class="container text-center my-5">
-    <h2>Questions? Contact Us!</h2>
-    <div class="row mt-4">
-      <div class="col-md-4">
-        <img src="../assets/img/luke.jpg" class="contact-img" alt="Luke Turner" />
-        <h3>Luke Turner</h3>
-        <p>luke@gmail.com<br>555-1010</p>
-      </div>
-      <div class="col-md-4">
-        <img src="../assets/img/wishka.jpg" class="contact-img" alt="Wishka Masooma" />
-        <h3>Wishka Masooma</h3>
-        <p>wishka@gamil.com<br>555-2020</p>
-      </div>
-      <div class="col-md-4">
-        <img src="../assets/img/Bre.jpg" class="contact-img" alt="Bre Layton" />
-        <h3>Bre Layton</h3>
-        <p>bre@gmail.com<br>555-3030</p>
-      </div>
-      <div class="col-md-4">
-        <img src="../assets/img/matthew.jpg" class="contact-img" alt="Matthew Fickling" />
-        <h3>Matthew Fickling</h3>
-        <p>matthew@gmail.com<br>555-4040</p>
-      </div>
-      <div class="col-md-4">
-        <img src="../assets/img/kate.jpg" class="contact-img" alt="Kate Dickman" />
-        <h3>Kate Dickman</h3>
-        <p>kate@gmail.com<br>555-5050</p>
-      </div>
-    </div>
-  </div>
+<div class="row mt-4">
+<div class="col-md-4">
+  <img src="../assets/img/luke.jpg" class="contact-img rounded-circle" alt="Luke Turner" />
+  <h3>Luke Turner</h3>
+  <p>luke@gmail.com<br>555-1010</p>
+</div>
+<div class="col-md-4">
+  <img src="../assets/img/wishka.jpg" class="contact-img rounded-circle" alt="Wishka Masooma" />
+  <h3>Wishka Masooma</h3>
+  <p>wishka@gamil.com<br>555-2020</p>
+</div>
+<div class="col-md-4">
+  <img src="../assets/img/Bre.jpg" class="contact-img rounded-circle" alt="Bre Layton" />
+  <h3>Bre Layton</h3>
+  <p>bre@gmail.com<br>555-3030</p>
+</div>
+<div class="col-md-4">
+  <img src="../assets/img/matthew.jpg" class="contact-img rounded-circle" alt="Matthew Fickling" />
+  <h3>Matthew Fickling</h3>
+  <p>matthew@gmail.com<br>555-4040</p>
+</div>
+<div class="col-md-4">
+  <img src="../assets/img/kate.jpg" class="contact-img rounded-circle" alt="Kate Dickman" />
+  <h3>Kate Dickman</h3>
+  <p>kate@gmail.com<br>555-5050</p>
+</div>
+</div>
+
 
 
 
