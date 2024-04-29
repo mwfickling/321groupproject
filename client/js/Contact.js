@@ -53,7 +53,7 @@ async function handleOnLoad(){
 <div class="col-md-4">
   <img src="../assets/img/wishka.jpg" class="contact-img rounded-circle" alt="Wishka Masooma" />
   <h3>Wishka Masooma</h3>
-  <p>wishka@gamil.com<br>555-2020</p>
+  <p>wishka@gmail.com<br>555-2020</p>
 </div>
 <div class="col-md-4">
   <img src="../assets/img/Bre.jpg" class="contact-img rounded-circle" alt="Bre Layton" />
