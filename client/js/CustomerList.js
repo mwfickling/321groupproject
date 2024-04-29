@@ -169,7 +169,6 @@ async function toggleAdmin(userId) {
         if (!response.ok) {
             throw new Error(`Failed to toggle admin status: ${response.status} ${response.statusText}`);
         }
-        // Reload customer data after toggling admin status
         handleOnLoad();
     } catch (error) {
         console.error('Error toggling admin status:', error);
@@ -195,7 +194,6 @@ async function toggleDelete(userId) {
         if (!response.ok) {
             throw new Error(`Failed to toggle delete status: ${response.status} ${response.statusText}`);
         }
-        // Reload customer data after toggling delete status
         handleOnLoad();
     } catch (error) {
         console.error('Error toggling delete status:', error);
@@ -211,12 +209,10 @@ async function loadAllCustomers() {
         }
         const customers = await response.json();
         console.log(customers)
-        // Sort customers array based on userID
         customers.sort((a, b) => a.userID - b.userID);
 
         let customerElements = '';
 
-        // Iterate over sorted customers array
         for (const customer of customers) {
             customerElements += `
                 <tr>
@@ -247,16 +243,13 @@ function setLoggedInUsername(firstName, lastName) {
 }
 
 async function handleLogout() {
-    // Clear logged-in user
     sessionStorage.clear();
-    // Redirect to login page
     window.location.href = 'login.html';
 }
 
 function openResetPasswordDialog(userId) {
     const newPassword = prompt('Enter the new password:');
     if (newPassword !== null) {
-        // User clicked OK in the prompt, handle the new password
         handleResetPassword(userId, newPassword);
     }
 }
@@ -276,7 +269,6 @@ async function handleResetPassword(userId, newPassword) {
             },
             body: JSON.stringify(userInfo)
         });
-        // Reload customer data after toggling delete status
         handleOnLoad();
     } catch (error) {
         alert('Could not change password. Please try again later.');

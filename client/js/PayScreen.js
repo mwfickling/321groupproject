@@ -2,10 +2,8 @@ const customerUrl = "http://localhost:5010/api/customers";
 let cart = JSON.parse(localStorage.getItem('cart')) || []; // Get cart items from local storage
 
 async function handleOnLoad() {
-  // Get cart items from local storage
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-  // If cart is empty, display message and link to browse recipes
   if (cart.length === 0) {
       const page = document.getElementById('PayPage');
       page.innerHTML = `

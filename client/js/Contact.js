@@ -118,7 +118,6 @@ async function handleOnLoad(){
     }
     const isAdmin = await response.json();
 
-    // Show admin menu if user is admin, hide otherwise
     const adminSettingsOption = document.getElementById('adminSettingsOption');
     if (isAdmin) {
       adminSettingsOption.style.display = 'block';
