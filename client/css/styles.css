@@ -11247,7 +11247,7 @@ body {
 .contact-img {
   display: block;
   margin: 0 auto; 
-  width: 100px; 
+  width: 200px; 
   height: 200px; 
   object-fit: cover; 
 }
